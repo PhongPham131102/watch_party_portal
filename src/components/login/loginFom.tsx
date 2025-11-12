@@ -1,13 +1,14 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, showToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/lib/validations/auth";
 import type { LoginFormValues } from "@/lib/validations/auth";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Form,
@@ -18,8 +19,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { loginUser, clearError } from "@/store/slices/authSlice";
+
 export function LoginForm({ className }: React.ComponentProps<"div">) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -29,38 +35,21 @@ export function LoginForm({ className }: React.ComponentProps<"div">) {
     },
   });
 
-  // Hiển thị toast khi có lỗi từ store
-  //   useEffect(() => {
-  //     if (error) {
-  //       console.log("Displaying error toast:", error);
-  //       showToast.error("Đăng nhập thất bại", error);
-  //       // Xóa lỗi sau khi hiển thị
-  //       clearError();
-  //     }
-  //   }, [error, clearError]);
+  useEffect(() => {
+    if (error) {
+      showToast.error("Đăng nhập thất bại", error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   async function onSubmit(data: LoginFormValues) {
-    setIsSubmitting(true);
-    // clearError();
-
-    // try {
-    //   const success = await login(data);
-    //   console.log("success: ", success);
-    //   if (success) {
-    //     console.log("Login successful, showing success toast");
-    //     // Hiển thị thông báo thành công
-    //     showToast.success(
-    //       "Đăng nhập thành công",
-    //       "Chào mừng bạn quay trở lại!"
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.log(":error: ", error);
-    //   // Lỗi sẽ được xử lý trong useEffect khi error state thay đổi
-    //   console.error("Login error:", error);
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+    try {
+      await dispatch(loginUser(data)).unwrap();
+      showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại!");
+      navigate("/", { replace: true });
+    } catch (err) {
+      // Error handled by useEffect
+    }
   }
 
   return (
@@ -112,10 +101,10 @@ export function LoginForm({ className }: React.ComponentProps<"div">) {
           />
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={loading}
             className="w-full bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <span className="relative z-10">
-              {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
+              {loading ? "Đang xử lý..." : "Đăng nhập"}
             </span>
             <span className="absolute inset-0 bg-linear-to-r from-primary to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
           </Button>
