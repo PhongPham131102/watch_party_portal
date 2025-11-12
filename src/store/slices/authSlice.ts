@@ -1,9 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AuthState, LoginCredentials, AuthResponse } from '@/types';
+import { defineAbilityFor } from '@/lib/ability';
+import type { AppAbility } from '@/lib/ability';
 
-const initialState: AuthState = {
+interface AuthStateWithAbility extends AuthState {
+  ability: AppAbility;
+}
+
+const initialState: AuthStateWithAbility = {
   user: null,
+  role: null,
+  permissions: {},
+  ability: defineAbilityFor({}),
   accessToken: localStorage.getItem('accessToken'),
   refreshToken: localStorage.getItem('refreshToken'),
   loading: false,
@@ -47,6 +56,9 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.role = null;
+      state.permissions = {};
+      state.ability = defineAbilityFor({});
       state.accessToken = null;
       state.refreshToken = null;
       state.error = null;
@@ -58,6 +70,9 @@ const authSlice = createSlice({
     },
     setCredentials: (state, action: PayloadAction<AuthResponse>) => {
       state.user = action.payload.user;
+      state.role = action.payload.role;
+      state.permissions = action.payload.permissions;
+      state.ability = defineAbilityFor(action.payload.permissions);
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       localStorage.setItem('accessToken', action.payload.accessToken);
@@ -73,6 +88,9 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.role = action.payload.role;
+        state.permissions = action.payload.permissions;
+        state.ability = defineAbilityFor(action.payload.permissions);
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.error = null;
@@ -87,6 +105,9 @@ const authSlice = createSlice({
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.role = action.payload.role;
+        state.permissions = action.payload.permissions;
+        state.ability = defineAbilityFor(action.payload.permissions);
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
       })
@@ -94,6 +115,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
         state.user = null;
+        state.role = null;
+        state.permissions = {};
+        state.ability = defineAbilityFor({});
         state.accessToken = null;
         state.refreshToken = null;
         localStorage.removeItem('accessToken');
