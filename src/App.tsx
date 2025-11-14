@@ -4,11 +4,14 @@ import { AbilityContext } from "@/lib/Can";
 import { useAppSelector } from "@/store/hooks";
 import { Toaster } from "@/components/ui/sonner";
 import { AppRoutes } from "@/routes";
+import { AuthProvider } from "@/components/common";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

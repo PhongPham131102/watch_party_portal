@@ -16,4 +16,8 @@ export const API_ENDPOINTS = {
 export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/dang-nhap",
+  REGISTER: "/dang-ky",
+  // Add more routes as needed
+  DASHBOARD: "/dashboard",
+  PROFILE: "/profile",
 } as const;
