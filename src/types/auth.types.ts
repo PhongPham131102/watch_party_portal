@@ -50,7 +50,7 @@ export interface AuthResponse {
   role: string;
   permissions: Permissions;
   accessToken: string;
-  refreshToken: string;
+  // refreshToken is now in httpOnly cookie, not in response
 }
 
 export interface AuthState {
@@ -58,7 +58,7 @@ export interface AuthState {
   role: string | null;
   permissions: Permissions;
   accessToken: string | null;
-  refreshToken: string | null;
+  // refreshToken is now in httpOnly cookie, removed from state
   loading: boolean;
   error: string | null;
 }

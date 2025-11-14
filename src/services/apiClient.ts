@@ -32,6 +32,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Enable sending cookies with requests
 });
 
 apiClient.interceptors.request.use(
@@ -84,34 +85,23 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem("refreshToken");
-
-      // Không có refresh token -> redirect login
-      if (!refreshToken) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = APP_ROUTES.LOGIN;
-        return Promise.reject(error);
-      }
-
       try {
-        // Gọi API refresh token
+        // Gọi API refresh token (refreshToken sẽ được đọc từ httpOnly cookie)
         const response = await axios.post(
           `${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`,
-          { refreshToken },
+          {}, // No need to send refreshToken in body
           {
             headers: {
               "Content-Type": "application/json",
             },
+            withCredentials: true, // Send cookies with request
           }
         );
 
-        const { accessToken, refreshToken: newRefreshToken } =
-          response.data.data;
+        const { accessToken } = response.data.data;
 
-        // Lưu token mới
+        // Lưu accessToken mới
         localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
 
         // Update header cho request ban đầu
         if (originalRequest.headers) {
@@ -127,7 +117,6 @@ apiClient.interceptors.response.use(
         // Refresh token thất bại -> redirect login
         processQueue(refreshError as AxiosError, null);
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         window.location.href = APP_ROUTES.LOGIN;
         return Promise.reject(refreshError);
       } finally {

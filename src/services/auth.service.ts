@@ -30,11 +30,18 @@ export const authService = {
     return response.data.data;
   },
 
-  refreshToken: async (refreshToken: string) => {
+  // refreshToken is now read from httpOnly cookie, no need to pass it
+  refreshToken: async () => {
     const response = await apiClient.post<{ data: AuthResponse }>(
-      API_ENDPOINTS.AUTH.REFRESH,
-      { refreshToken }
+      API_ENDPOINTS.AUTH.REFRESH
     );
     return response.data.data;
+  },
+
+  logout: async () => {
+    const response = await apiClient.post<{ message: string }>(
+      API_ENDPOINTS.AUTH.LOGOUT
+    );
+    return response.data;
   },
 };
