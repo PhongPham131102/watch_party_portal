@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { getCurrentUser } from "@/store/slices/authSlice";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { APP_ROUTES } from "@/constants";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   }
 
   if (!accessToken) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={APP_ROUTES.LOGIN} replace />;
   }
 
   return <>{children}</>;

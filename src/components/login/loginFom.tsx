@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/lib/validations/auth";
 import type { LoginFormValues } from "@/lib/validations/auth";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -20,12 +19,12 @@ import {
 } from "@/components/ui/form";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loginUser, clearError } from "@/store/slices/authSlice";
+import { loginUser } from "@/store/slices/authSlice";
 
 export function LoginForm({ className }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -35,19 +34,17 @@ export function LoginForm({ className }: React.ComponentProps<"div">) {
     },
   });
 
-  useEffect(() => {
-    if (error) {
-      showToast.error("Đăng nhập thất bại", error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
-
   async function onSubmit(data: LoginFormValues) {
     try {
       await dispatch(loginUser(data)).unwrap();
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại!");
       navigate("/", { replace: true });
     } catch (err) {
+      console.log("Login error:", err);
+      showToast.error(
+        "Đăng nhập thất bại",
+        "Tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại!"
+      );
       // Error handled by useEffect
     }
   }
