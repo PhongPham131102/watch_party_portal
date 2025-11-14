@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
 import { APP_ROUTES } from "@/constants";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface ProtectedRouteProps {
  * 
  * Bảo vệ các route chỉ dành cho người dùng đã đăng nhập.
  * Nếu chưa đăng nhập, redirect về trang login.
+ * Tự động bọc children trong DashboardLayout.
  * 
  * Check authentication bằng cách:
  * 1. Kiểm tra accessToken trong localStorage (persistent across tabs/reload)
@@ -51,8 +53,8 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  // Đã đăng nhập -> cho phép truy cập
-  return <>{children}</>;
+  // Đã đăng nhập -> cho phép truy cập với DashboardLayout
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
 
 export default ProtectedRoute;
