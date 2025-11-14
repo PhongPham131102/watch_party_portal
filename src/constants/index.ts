@@ -17,7 +17,16 @@ export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/dang-nhap",
   REGISTER: "/dang-ky",
+  FORBIDDEN: "/403",
   // Add more routes as needed
   DASHBOARD: "/dashboard",
   PROFILE: "/profile",
+  USERS: "/users",
+  MOVIES: "/movies",
+  ACTORS: "/actors",
+  DIRECTORS: "/directors",
+  COUNTRIES: "/countries",
+  ROOMS: "/rooms",
+  COMMENTS: "/comments",
+  ROLES: "/roles",
 } as const;

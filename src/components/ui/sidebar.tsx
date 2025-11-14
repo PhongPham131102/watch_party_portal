@@ -5,8 +5,23 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/Logo";
 import { useNavigate } from "react-router-dom";
-import { Home, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { 
+  Home, 
+  ChevronLeft, 
+  ChevronRight, 
+  LogOut,
+  Users,
+  Film,
+  UserCircle,
+  Video,
+  Globe,
+  MessageSquare,
+  Shield
+} from "lucide-react";
 import { APP_ROUTES } from "@/constants";
+import { useAbility } from "@casl/react";
+import { AbilityContext } from "@/lib/Can";
+import { RBACModule, RBACAction } from "@/types";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -20,34 +35,98 @@ interface MenuItem {
   label: string;
   path: string;
   badge?: string;
+  module?: string; // RBAC module
+  action?: string; // RBAC action (default: 'read')
 }
 
-// Menu items configuration with permissions
-const menuItemsConfig: (MenuItem & { permission?: string })[] = [
+// Menu items configuration with RBAC permissions
+const menuItemsConfig: MenuItem[] = [
   {
     icon: Home,
     label: "Dashboard",
     path: APP_ROUTES.HOME,
-    // Dashboard is always visible
+    // Dashboard is always visible (no permission required)
+  },
+  {
+    icon: Users,
+    label: "Quản lý người dùng",
+    path: "/users",
+    module: RBACModule.USERS,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Film,
+    label: "Quản lý phim",
+    path: "/movies",
+    module: RBACModule.MOVIES,
+    action: RBACAction.READ,
+  },
+  {
+    icon: UserCircle,
+    label: "Quản lý diễn viên",
+    path: "/actors",
+    module: RBACModule.ACTORS,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Video,
+    label: "Quản lý đạo diễn",
+    path: "/directors",
+    module: RBACModule.DIRECTORS,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Globe,
+    label: "Quản lý quốc gia",
+    path: "/countries",
+    module: RBACModule.COUNTRIES,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Video,
+    label: "Quản lý phòng",
+    path: "/rooms",
+    module: RBACModule.ROOMS,
+    action: RBACAction.READ,
+  },
+  {
+    icon: MessageSquare,
+    label: "Quản lý bình luận",
+    path: "/comments",
+    module: RBACModule.COMMENTS,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Shield,
+    label: "Quản lý vai trò",
+    path: "/roles",
+    module: RBACModule.ROLES,
+    action: RBACAction.READ,
   },
 ];
 
-// Filter menu items based on user permissions
-const getFilteredMenuItems = (): MenuItem[] => {
-  return menuItemsConfig.filter((item) => {
-    // Dashboard is always visible
-    if (item.path === APP_ROUTES.HOME) {
-      return true;
-    }
+// Filter menu items based on user permissions using CASL ability
+const useFilteredMenuItems = (): MenuItem[] => {
+  // Sử dụng useAbility từ CASL - cách chuẩn
+  const ability = useAbility(AbilityContext);
 
-    // If no permission required, show the item
-    if (!item.permission) {
-      return true;
-    }
+  return React.useMemo(() => {
+    return menuItemsConfig.filter((item) => {
+      // Dashboard is always visible
+      if (item.path === APP_ROUTES.HOME) {
+        return true;
+      }
 
-    // Check if user has read permission for this subject
-    //return canRead(item.permission);
-  });
+      // If no permission required, show the item
+      if (!item.module) {
+        return true;
+      }
+
+      // Check if user has permission using CASL ability
+      const action = item.action || RBACAction.READ;
+      return ability.can(action as any, item.module as any);
+    });
+  }, [ability]);
 };
 
 export function Sidebar({
@@ -57,6 +136,8 @@ export function Sidebar({
   currentPath,
 }: SidebarProps) {
   const navigate = useNavigate();
+  const filteredMenuItems = useFilteredMenuItems();
+  
   return (
     <div
       className={cn(
@@ -91,7 +172,7 @@ export function Sidebar({
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-3 overflow-y-auto scrollbar-hide">
-        {getFilteredMenuItems().map((item) => {
+        {filteredMenuItems.map((item) => {
           const isActive = currentPath === item.path;
           const Icon = item.icon;
 
