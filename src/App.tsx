@@ -1,15 +1,24 @@
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes";
+import { BrowserRouter } from "react-router-dom";
+
 import { AbilityContext } from "@/lib/Can";
 import { useAppSelector } from "@/store/hooks";
 import { Toaster } from "@/components/ui/sonner";
+import { AppRoutes } from "@/routes";
 
 function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
   const ability = useAppSelector((state) => state.auth.ability);
 
   return (
     <AbilityContext.Provider value={ability}>
-      <RouterProvider router={router} />
+      <AppRoutes />
       <Toaster />
     </AbilityContext.Provider>
   );
