@@ -3,6 +3,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import { APP_ROUTES } from "@/constants";
 import { RequireAuth } from "@/components/common/RequireAuth";
+import { PublicRoute } from "@/components/common/PublicRoute";
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ export const router = createBrowserRouter([
   },
   {
     path: APP_ROUTES.LOGIN,
-    element: <Login />,
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
   },
 ]);
