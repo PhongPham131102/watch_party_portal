@@ -119,6 +119,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+  
+  html,
+  body {
+    @apply h-full overflow-hidden;
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-family: var(
@@ -131,6 +137,10 @@
       Arial,
       sans-serif
     );
+  }
+
+  #root {
+    @apply h-full;
   }
 
   /* Ensure dark mode works properly */

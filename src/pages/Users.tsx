@@ -18,6 +18,7 @@ import {
   ModalEditUser,
 } from "@/components/user";
 import type { User } from "@/services/user.service";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
 
 export default function UsersPage() {
   const {
@@ -62,6 +63,10 @@ export default function UsersPage() {
     fetchUsers({ page: newPage, limit, search: debouncedSearchTerm });
   };
 
+  const handlePageSizeChange = (newPageSize: number) => {
+    fetchUsers({ page: 1, limit: newPageSize, search: debouncedSearchTerm });
+  };
+
   if (!canAccessPage) {
     return (
       <div className="p-10 text-center">
@@ -76,8 +81,8 @@ export default function UsersPage() {
   }
 
   return (
-    <TooltipProvider>
     <div className="p-6">
+    <TooltipProvider>
       <div className="mb-6 flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-violet-600 to-fuchsia-600">
@@ -161,7 +166,7 @@ export default function UsersPage() {
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[800px]">
                 <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
@@ -304,76 +309,17 @@ export default function UsersPage() {
             </div>
 
             {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
-                <div className="flex-1 flex justify-between sm:hidden">
-                  <Button
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Trước
-                  </Button>
-                  <Button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Sau
-                  </Button>
-                </div>
-                <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm text-gray-700 dark:text-gray-300">
-                      Hiển thị{" "}
-                      <span className="font-medium">{(page - 1) * limit + 1}</span>{" "}
-                      đến{" "}
-                      <span className="font-medium">
-                        {Math.min(page * limit, total)}
-                      </span>{" "}
-                      trong <span className="font-medium">{total}</span> kết quả
-                    </p>
-                  </div>
-                  <div>
-                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                      <Button
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page === 1}
-                        variant="outline"
-                        size="sm"
-                        className="rounded-l-md"
-                      >
-                        Trước
-                      </Button>
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (p) => (
-                          <Button
-                            key={p}
-                            onClick={() => handlePageChange(p)}
-                            variant={p === page ? "default" : "outline"}
-                            size="sm"
-                            className="rounded-none"
-                          >
-                            {p}
-                          </Button>
-                        )
-                      )}
-                      <Button
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page === totalPages}
-                        variant="outline"
-                        size="sm"
-                        className="rounded-r-md"
-                      >
-                        Sau
-                      </Button>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            )}
+            <div className="border-t border-gray-200 dark:border-gray-700">
+              <DataTablePagination
+                currentPage={page}
+                totalPages={totalPages}
+                pageSize={limit}
+                totalItems={total}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                showPageSizeSelector={true}
+              />
+            </div>
           </>
         )}
       </div>
@@ -424,7 +370,7 @@ export default function UsersPage() {
           handleRefresh();
         }}
       />
-    </div>
     </TooltipProvider>
+    </div>
   );
 }
