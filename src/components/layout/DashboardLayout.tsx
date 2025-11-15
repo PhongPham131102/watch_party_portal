@@ -3,9 +3,10 @@ import { Sidebar } from "@/components/ui/sidebar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logoutUser } from "@/store/slices/authSlice";
-import { showToast } from "@/lib/utils";
+
 import { Menu, User, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { showToast } from "@/lib/toast";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -57,8 +58,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 variant="ghost"
                 size="sm"
                 onClick={toggleSidebar}
-                className="lg:hidden cursor-pointer"
-              >
+                className="lg:hidden cursor-pointer">
                 <Menu className="h-5 w-5" />
               </Button>
             </div>
@@ -80,8 +80,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
-                  >
+                    className="h-10 w-10 rounded-full bg-linear-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 cursor-pointer">
                     <User className="h-5 w-5 text-white" />
                   </Button>
 
@@ -90,23 +89,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     <div className="py-2">
                       <button
                         onClick={() => navigate("/profile")}
-                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center cursor-pointer"
-                      >
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         Hồ sơ
                       </button>
                       <button
                         onClick={() => navigate("/settings")}
-                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center cursor-pointer"
-                      >
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center cursor-pointer">
                         <SettingsIcon className="h-4 w-4 mr-2" />
                         Cài đặt
                       </button>
                       <hr className="my-1 border-gray-200 dark:border-gray-700" />
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center cursor-pointer"
-                      >
+                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
                         Đăng xuất
                       </button>

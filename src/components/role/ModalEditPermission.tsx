@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { showToast } from "@/lib/utils";
+import { showToast } from "@/lib/toast";
 import { useRoleStore } from "@/store/slices/roleSlice";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -86,10 +86,15 @@ const convertRolesObjectToPermissions = (rolesObject: RolesStructure) => {
     const enabledPermissions = Object.keys(value).filter(
       (permission) => value[permission as keyof RolePermission]
     );
-    
+
     // If all permissions are enabled, send "manage" instead
-    if (enabledPermissions.length === 4 && 
-        value.read && value.create && value.update && value.delete) {
+    if (
+      enabledPermissions.length === 4 &&
+      value.read &&
+      value.create &&
+      value.update &&
+      value.delete
+    ) {
       permissions[key] = ["manage"];
     } else if (enabledPermissions.length > 0) {
       permissions[key] = enabledPermissions;

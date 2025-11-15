@@ -4,6 +4,12 @@ import { usePermission } from "@/hooks";
 import useDebounce from "@/hooks/useDebounce";
 import { RBACModule } from "@/types";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Plus, Search, RefreshCw, Eye, Pencil, Trash2 } from "lucide-react";
 import {
   ModalCreateUser,
@@ -70,6 +76,7 @@ export default function UsersPage() {
   }
 
   return (
+    <TooltipProvider>
     <div className="p-6">
       <div className="mb-6 flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
         <div>
@@ -228,46 +235,64 @@ export default function UsersPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex justify-end gap-2">
                             {canRead(RBACModule.USERS) && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setIsOpenViewModal(true);
-                                }}
-                                title="Xem chi tiết"
-                                className="cursor-pointer"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedUser(user);
+                                      setIsOpenViewModal(true);
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Xem chi tiết</p>
+                                </TooltipContent>
+                              </Tooltip>
                             )}
                             {canUpdateUser && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setIsOpenEditModal(true);
-                                }}
-                                title="Chỉnh sửa"
-                                className="cursor-pointer"
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedUser(user);
+                                      setIsOpenEditModal(true);
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Chỉnh sửa</p>
+                                </TooltipContent>
+                              </Tooltip>
                             )}
                             {canDeleteUser && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setIsOpenDeleteModal(true);
-                                }}
-                                title="Xóa người dùng"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
+                                    onClick={() => {
+                                      setSelectedUser(user);
+                                      setIsOpenDeleteModal(true);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Xóa người dùng</p>
+                                </TooltipContent>
+                              </Tooltip>
                             )}
                           </div>
                         </td>
@@ -400,5 +425,6 @@ export default function UsersPage() {
         }}
       />
     </div>
+    </TooltipProvider>
   );
 }

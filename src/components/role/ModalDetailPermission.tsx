@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
-import { showToast } from "@/lib/utils";
+import { showToast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,

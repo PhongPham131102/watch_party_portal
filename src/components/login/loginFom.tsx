@@ -1,4 +1,4 @@
-import { cn, showToast } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,8 @@ import {
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { loginUser } from "@/store/slices/authSlice";
+import type React from "react";
+import { showToast } from "@/lib/toast";
 
 export function LoginForm({ className }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();

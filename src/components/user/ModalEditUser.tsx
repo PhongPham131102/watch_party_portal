@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { showToast } from "@/lib/utils";
+import { showToast } from "@/lib/toast";
 import { useUserStore } from "@/store/slices/userSlice";
 import { useRoleStore } from "@/store/slices/roleSlice";
 import type { UpdateUserDto } from "@/services/user.service";
