@@ -12,14 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RBACModule } from "@/types";
+import { RBACModule, type Role } from "@/types";
 
 interface ModalEditPermissionProps {
   isOpen: boolean;
   onClose: () => void;
   isAdd: boolean;
   onComplete: () => void;
-  permissionData: any;
+  permissionData: Partial<Role>;
 }
 
 interface RolePermission {
@@ -193,7 +193,6 @@ function ModalEditPermission({
       displayName: roleDisplayName,
       description: roleDescription,
       permissions: convertRolesObjectToPermissions(roles),
-      isActive: true,
     };
 
     try {
@@ -208,6 +207,10 @@ function ModalEditPermission({
           showToast.error("Lỗi", "Không thể tạo vai trò mới");
         }
       } else {
+        if (!permissionData.id) {
+          showToast.error("Lỗi", "Không tìm thấy ID vai trò");
+          return;
+        }
         const success = await updateRole(permissionData.id, permissionPayload);
         if (success) {
           showToast.success("Thành công", "Cập nhật vai trò thành công");
@@ -332,7 +335,7 @@ function ModalEditPermission({
                           <div className="w-[20%] flex justify-center items-center">
                             <Checkbox
                               checked={roles[role].read}
-                              onCheckedChange={(checked: any) => {
+                              onCheckedChange={(checked) => {
                                 setRoles((prevRoles: RolesStructure) => ({
                                   ...prevRoles,
                                   [role]: {
@@ -347,7 +350,7 @@ function ModalEditPermission({
                           <div className="w-[20%] flex justify-center items-center">
                             <Checkbox
                               checked={roles[role].create}
-                              onCheckedChange={(checked: any) => {
+                              onCheckedChange={(checked) => {
                                 setRoles((prevRoles: RolesStructure) => ({
                                   ...prevRoles,
                                   [role]: {
@@ -362,7 +365,7 @@ function ModalEditPermission({
                           <div className="w-[20%] flex justify-center items-center">
                             <Checkbox
                               checked={roles[role].delete}
-                              onCheckedChange={(checked: any) => {
+                              onCheckedChange={(checked) => {
                                 setRoles((prevRoles: RolesStructure) => ({
                                   ...prevRoles,
                                   [role]: {
@@ -377,7 +380,7 @@ function ModalEditPermission({
                           <div className="w-[20%] flex justify-center items-center">
                             <Checkbox
                               checked={roles[role].update}
-                              onCheckedChange={(checked: any) => {
+                              onCheckedChange={(checked) => {
                                 setRoles((prevRoles: RolesStructure) => ({
                                   ...prevRoles,
                                   [role]: {
@@ -397,7 +400,7 @@ function ModalEditPermission({
                                 roles[role].update &&
                                 roles[role].delete
                               }
-                              onCheckedChange={(checked: any) => {
+                              onCheckedChange={(checked) => {
                                 const newValue = checked as boolean;
                                 setRoles((prevRoles: RolesStructure) => ({
                                   ...prevRoles,

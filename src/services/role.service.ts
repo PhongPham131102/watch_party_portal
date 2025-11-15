@@ -11,7 +11,6 @@ export interface Role {
   displayName: string;
   description: string;
   isDefault: boolean;
-  isActive: boolean;
   permissions: RolePermissions;
   createdAt?: string;
   updatedAt?: string;
@@ -30,7 +29,7 @@ export interface UpdateRoleDto {
   displayName?: string;
   description?: string;
   isDefault?: boolean;
-  isActive?: boolean;
+
   permissions?: RolePermissions;
 }
 

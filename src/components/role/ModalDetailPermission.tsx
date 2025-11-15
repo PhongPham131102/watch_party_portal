@@ -9,12 +9,12 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { RBACModule } from "@/types";
+import { RBACModule, type Role } from "@/types";
 
 interface ModalDetailPermissionProps {
   isOpen: boolean;
   onClose: () => void;
-  permissionData: any;
+  permissionData: Partial<Role>;
   onComplete: () => void;
 }
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { showToast } from "@/lib/utils";
+import { useRoleStore } from "@/store/slices/roleSlice";
+import type { Role } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +15,7 @@ import { AlertTriangle } from "lucide-react";
 interface ModalDeletePermissionProps {
   isOpen: boolean;
   onClose: () => void;
-  permissionData: any;
+  permissionData: Partial<Role>;
   onComplete: () => void;
 }
 
@@ -23,22 +25,28 @@ function ModalDeletePermission({
   permissionData,
   onComplete,
 }: ModalDeletePermissionProps) {
+  const { deleteRole } = useRoleStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOnDelete = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!permissionData?.id) {
+      showToast.error("Lỗi", "Không tìm thấy ID vai trò");
+      return;
+    }
+
     try {
       setIsLoading(true);
-
-      // TODO: Integrate with your API
-      // const res = await roleService.deleteRole(permissionData?.id);
-      // if (res.ok) {
-      showToast.success("Thành công", "Xóa vai trò thành công");
-      onClose();
-      onComplete();
-      // } else {
-      //   showToast.error("Lỗi", "Không thể xóa vai trò, vui lòng thử lại sau");
-      // }
+      const success = await deleteRole(permissionData.id);
+      
+      if (success) {
+        showToast.success("Thành công", "Xóa vai trò thành công");
+        onClose();
+        onComplete();
+      } else {
+        showToast.error("Lỗi", "Không thể xóa vai trò, vui lòng thử lại sau");
+      }
     } catch (error) {
       console.log(error);
       showToast.error("Lỗi", "Không thể xóa vai trò, vui lòng thử lại sau");

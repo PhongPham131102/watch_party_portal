@@ -4,21 +4,12 @@ import ModalDeletePermission from "./ModalDeletePermission";
 import ModalDetailPermission from "./ModalDetailPermission";
 import ModalEditPermission from "./ModalEditPermission";
 import { usePermission } from "@/hooks";
-import { RBACModule } from "@/types";
+import { RBACModule, type Role } from "@/types";
 import { cn } from "@/lib/utils";
 import { useRoleStore } from "@/store/slices/roleSlice";
 
-interface Role {
-  id?: string;
-  name?: string;
-  displayName?: string;
-  description?: string;
-  isActive?: boolean;
-  permissions?: Record<string, string[]>;
-}
-
 interface CardPermissionProps {
-  role: Role;
+  role: Partial<Role>;
   isAdd: boolean;
 }
 
