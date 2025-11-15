@@ -32,8 +32,9 @@ export const fetchRoles = createAsyncThunk("roles/fetchRoles", async (_, { rejec
   try {
     const response = await roleService.getRoles();
     return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch roles");
+  } catch (error) {
+    const err = error as { message?: string };
+    return rejectWithValue(err.message || "Đã có lỗi xảy ra khi tải danh sách vai trò");
   }
 });
 
@@ -43,8 +44,9 @@ export const createRole = createAsyncThunk(
     try {
       const response = await roleService.createRole(role);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to create role");
+    } catch (error) {
+      const err = error as { message?: string };
+      return rejectWithValue(err.message || "Đã có lỗi xảy ra khi tạo vai trò");
     }
   }
 );
@@ -55,8 +57,9 @@ export const updateRole = createAsyncThunk(
     try {
       const response = await roleService.updateRole(id, role);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to update role");
+    } catch (error) {
+      const err = error as { message?: string };
+      return rejectWithValue(err.message || "Đã có lỗi xảy ra khi cập nhật vai trò");
     }
   }
 );
@@ -67,8 +70,9 @@ export const deleteRole = createAsyncThunk(
     try {
       await roleService.deleteRole(id);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Failed to delete role");
+    } catch (error) {
+      const err = error as { message?: string };
+      return rejectWithValue(err.message || "Đã có lỗi xảy ra khi xóa vai trò");
     }
   }
 );
@@ -100,9 +104,9 @@ const roleSlice = createSlice({
         state.isLoading = false;
         state.roles = action.payload;
       })
-      .addCase(fetchRoles.rejected, (state) => {
+      .addCase(fetchRoles.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = "Không thể tải danh sách vai trò";
+        state.error = action.payload as string;
       })
       .addCase(createRole.pending, (state) => {
         state.isCreating = true;
@@ -112,9 +116,9 @@ const roleSlice = createSlice({
         state.isCreating = false;
         state.roles.push(action.payload);
       })
-      .addCase(createRole.rejected, (state) => {
+      .addCase(createRole.rejected, (state, action) => {
         state.isCreating = false;
-        state.createError = "Không thể tạo vai trò mới";
+        state.createError = action.payload as string;
       })
       .addCase(updateRole.pending, (state) => {
         state.isUpdating = true;
@@ -127,9 +131,9 @@ const roleSlice = createSlice({
           state.roles[index] = action.payload;
         }
       })
-      .addCase(updateRole.rejected, (state) => {
+      .addCase(updateRole.rejected, (state, action) => {
         state.isUpdating = false;
-        state.updateError = "Không thể cập nhật vai trò";
+        state.updateError = action.payload as string;
       })
       .addCase(deleteRole.pending, (state) => {
         state.isDeleting = true;
@@ -139,9 +143,9 @@ const roleSlice = createSlice({
         state.isDeleting = false;
         state.roles = state.roles.filter((r) => r.id !== action.payload);
       })
-      .addCase(deleteRole.rejected, (state) => {
+      .addCase(deleteRole.rejected, (state, action) => {
         state.isDeleting = false;
-        state.deleteError = "Không thể xóa vai trò";
+        state.deleteError = action.payload as string;
       });
   },
 });

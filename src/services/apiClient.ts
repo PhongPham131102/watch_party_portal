@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import type {
   AxiosInstance,
@@ -5,12 +6,15 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 import { API_BASE_URL, API_ENDPOINTS, APP_ROUTES } from "@/constants";
+import { getErrorMessage, type ApiErrorResponse } from "@/constants/errorCodes";
+
+interface QueueItem {
+  resolve: (token?: string | null) => void;
+  reject: (error?: unknown) => void;
+}
 
 let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (value?: any) => void;
-  reject: (reason?: any) => void;
-}> = [];
+let failedQueue: QueueItem[] = [];
 
 const processQueue = (
   error: AxiosError | null,
@@ -50,10 +54,21 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
+  async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+
+    // Xử lý error message từ backend
+    if (error.response?.data) {
+      const errorData = error.response.data;
+      const errorMessage = getErrorMessage(
+        errorData.errorCode,
+        errorData.message
+      );
+      // Gắn message đã được translate vào error để các slice có thể sử dụng
+      error.message = errorMessage;
+    }
 
     const isAuthEndpoint =
       originalRequest.url?.includes(API_ENDPOINTS.AUTH.LOGIN) ||

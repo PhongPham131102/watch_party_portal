@@ -32,10 +32,10 @@ export const loginUser = createAsyncThunk(
       const data = await authService.login(credentials);
       localStorage.setItem("accessToken", data.accessToken);
       return data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
-      const message =
-        error.response?.data?.message || error.message || "Login failed";
+      const err = error as { message?: string };
+      const message = err.message || "Đăng nhập thất bại";
       return rejectWithValue(message);
     }
   }
@@ -46,9 +46,9 @@ export const getCurrentUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await authService.getCurrentUser();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.message || error.message || "Failed to get user";
+    } catch (error) {
+      const err = error as { message?: string };
+      const message = err.message || "Không thể lấy thông tin người dùng";
       return rejectWithValue(message);
     }
   }
@@ -59,10 +59,10 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await authService.logout();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Logout error:", error);
-      const message =
-        error.response?.data?.message || error.message || "Logout failed";
+      const err = error as { message?: string };
+      const message = err.message || "Đăng xuất thất bại";
       return rejectWithValue(message);
     }
   }

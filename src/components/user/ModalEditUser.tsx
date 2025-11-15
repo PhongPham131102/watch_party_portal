@@ -46,7 +46,7 @@ export default function ModalEditUser({
   userId,
   onComplete,
 }: ModalEditUserProps) {
-  const { currentUser, isFetchingDetail, isUpdating, fetchUserById, updateUser, clearCurrentUser } =
+  const { currentUser, isFetchingDetail, isUpdating, updateError, fetchUserById, updateUser, clearCurrentUser } =
     useUserStore();
   const { roles, fetchRoles } = useRoleStore();
 
@@ -106,10 +106,10 @@ export default function ModalEditUser({
         onComplete();
         onClose();
       } else {
-        showToast.error("Lỗi", "Không thể cập nhật người dùng");
+        showToast.error("Lỗi", updateError || "Không thể cập nhật người dùng");
       }
     } catch {
-      showToast.error("Lỗi", "Có lỗi xảy ra khi cập nhật người dùng");
+      showToast.error("Lỗi", updateError || "Có lỗi xảy ra khi cập nhật người dùng");
     }
   }
 

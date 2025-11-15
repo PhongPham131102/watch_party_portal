@@ -42,7 +42,7 @@ export default function ModalCreateUser({
   onClose,
   onComplete,
 }: ModalCreateUserProps) {
-  const { createUser, isCreating } = useUserStore();
+  const { createUser, isCreating, createError } = useUserStore();
   const { roles, fetchRoles } = useRoleStore();
 
   const form = useForm<CreateUserFormValues>({
@@ -64,24 +64,20 @@ export default function ModalCreateUser({
   }, [isOpen]);
 
   async function onSubmit(data: CreateUserFormValues) {
-    try {
-      const userData = {
-        username: data.username,
-        password: data.password,
-        email: data.email,
-        roleId: data.roleId,
-      };
-      const success = await createUser(userData);
+    const userData = {
+      username: data.username,
+      password: data.password,
+      email: data.email,
+      roleId: data.roleId,
+    };
+    const success = await createUser(userData);
 
-      if (success) {
-        showToast.success("Thành công", "Tạo người dùng thành công");
-        onComplete();
-        onClose();
-      } else {
-        showToast.error("Lỗi", "Không thể tạo người dùng");
-      }
-    } catch {
-      showToast.error("Lỗi", "Có lỗi xảy ra khi tạo người dùng");
+    if (success) {
+      showToast.success("Thành công", "Tạo người dùng thành công");
+      onComplete();
+      onClose();
+    } else {
+      showToast.error("Lỗi", createError || "Không thể tạo người dùng");
     }
   }
 

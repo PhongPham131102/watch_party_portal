@@ -25,7 +25,7 @@ export default function ModalDeleteUser({
   user,
   onComplete,
 }: ModalDeleteUserProps) {
-  const { deleteUser } = useUserStore();
+  const { deleteUser, deleteError } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async (e: React.FormEvent) => {
@@ -45,10 +45,10 @@ export default function ModalDeleteUser({
         onComplete();
         onClose();
       } else {
-        showToast.error("Lỗi", "Không thể xóa người dùng");
+        showToast.error("Lỗi", deleteError || "Không thể xóa người dùng");
       }
     } catch {
-      showToast.error("Lỗi", "Có lỗi xảy ra khi xóa người dùng");
+      showToast.error("Lỗi", deleteError || "Có lỗi xảy ra khi xóa người dùng");
     } finally {
       setIsLoading(false);
     }

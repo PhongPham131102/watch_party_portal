@@ -25,7 +25,7 @@ function ModalDeletePermission({
   permissionData,
   onComplete,
 }: ModalDeletePermissionProps) {
-  const { deleteRole } = useRoleStore();
+  const { deleteRole, deleteError } = useRoleStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOnDelete = async (e: React.FormEvent) => {
@@ -45,11 +45,11 @@ function ModalDeletePermission({
         onClose();
         onComplete();
       } else {
-        showToast.error("Lỗi", "Không thể xóa vai trò, vui lòng thử lại sau");
+        showToast.error("Lỗi", deleteError || "Không thể xóa vai trò, vui lòng thử lại sau");
       }
     } catch (error) {
       console.log(error);
-      showToast.error("Lỗi", "Không thể xóa vai trò, vui lòng thử lại sau");
+      showToast.error("Lỗi", deleteError || "Không thể xóa vai trò, vui lòng thử lại sau");
     } finally {
       setIsLoading(false);
     }

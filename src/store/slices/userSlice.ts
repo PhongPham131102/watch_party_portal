@@ -57,9 +57,9 @@ export const fetchUsers = createAsyncThunk(
       const response = await userService.getUsers(params?.page, params?.limit, params?.search);
       return response.data;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch users"
+        err.message || "Đã có lỗi xảy ra khi tải danh sách người dùng"
       );
     }
   }
@@ -72,9 +72,9 @@ export const fetchUserById = createAsyncThunk(
       const response = await userService.getUserById(id);
       return response.data;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch user"
+        err.message || "Đã có lỗi xảy ra khi tải thông tin người dùng"
       );
     }
   }
@@ -87,9 +87,9 @@ export const createUser = createAsyncThunk(
       const response = await userService.createUser(user);
       return response.data;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to create user"
+        err.message || "Đã có lỗi xảy ra khi tạo người dùng"
       );
     }
   }
@@ -105,9 +105,9 @@ export const updateUser = createAsyncThunk(
       const response = await userService.updateUser(id, user);
       return response.data;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to update user"
+        err.message || "Đã có lỗi xảy ra khi cập nhật người dùng"
       );
     }
   }
@@ -120,9 +120,9 @@ export const toggleUserActive = createAsyncThunk(
       const response = await userService.toggleUserActive(id);
       return response.data;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to toggle user status"
+        err.message || "Đã có lỗi xảy ra khi thay đổi trạng thái người dùng"
       );
     }
   }
@@ -135,9 +135,9 @@ export const deleteUser = createAsyncThunk(
       await userService.deleteUser(id);
       return id;
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
+      const err = error as { message?: string };
       return rejectWithValue(
-        err.response?.data?.message || "Failed to delete user"
+        err.message || "Đã có lỗi xảy ra khi xóa người dùng"
       );
     }
   }

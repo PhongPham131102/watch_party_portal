@@ -111,7 +111,7 @@ function ModalEditPermission({
   permissionData,
   onComplete,
 }: ModalEditPermissionProps) {
-  const { isCreating, isUpdating, createRole, updateRole } = useRoleStore();
+  const { isCreating, isUpdating, createError, updateError, createRole, updateRole } = useRoleStore();
   const [roles, setRoles] = useState<RolesStructure>(
     JSON.parse(JSON.stringify(defaultRole))
   );
@@ -209,7 +209,7 @@ function ModalEditPermission({
           onClose();
           clearForm();
         } else {
-          showToast.error("Lỗi", "Không thể tạo vai trò mới");
+          showToast.error("Lỗi", createError || "Không thể tạo vai trò mới");
         }
       } else {
         if (!permissionData.id) {
@@ -222,14 +222,15 @@ function ModalEditPermission({
           onComplete();
           onClose();
         } else {
-          showToast.error("Lỗi", "Không thể cập nhật vai trò");
+          showToast.error("Lỗi", updateError || "Không thể cập nhật vai trò");
         }
       }
     } catch (error) {
       console.log(error);
+      const errorMsg = isAdd ? createError : updateError;
       showToast.error(
         "Lỗi",
-        `${isAdd ? "Thêm mới" : "Cập nhật"} vai trò thất bại, vui lòng thử lại sau`
+        errorMsg || `${isAdd ? "Thêm mới" : "Cập nhật"} vai trò thất bại, vui lòng thử lại sau`
       );
     }
   };
