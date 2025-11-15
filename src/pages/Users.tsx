@@ -3,8 +3,8 @@ import { useUserStore } from "@/store/slices/userSlice";
 import { useRoleStore } from "@/store/slices/roleSlice";
 import { usePermission, useUserFilters } from "@/hooks";
 import { RBACModule } from "@/types";
-import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { DataTable } from "@/components/common";
 import {
   ModalCreateUser,
   ModalDeleteUser,
@@ -152,53 +152,34 @@ export default function UsersPage() {
         />
 
         {/* Users Table */}
-        <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600 dark:text-gray-400">
-                Đang tải...
-              </span>
-            </div>
-          ) : error ? (
-            <div className="text-center py-16">
-              <div className="text-red-600 text-lg font-medium mb-2">
-                Lỗi khi tải dữ liệu
-              </div>
-              <div className="text-gray-500 dark:text-gray-400">{error}</div>
-              <Button onClick={handleRefresh} className="mt-4">
-                Thử lại
-              </Button>
-            </div>
-          ) : (
-            <>
-              <UserTable
-                users={users}
-                sortBy={sortBy}
-                sortOrder={sortOrder}
-                onSort={handleSort}
-                onView={handleViewUser}
-                onEdit={handleEditUser}
-                onDelete={handleDeleteUser}
-                emptyMessage={emptyState.message}
-                emptyDescription={emptyState.description}
-              />
+        <DataTable isLoading={isLoading} error={error} onRetry={handleRefresh}>
+          <>
+            <UserTable
+              users={users}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+              onView={handleViewUser}
+              onEdit={handleEditUser}
+              onDelete={handleDeleteUser}
+              emptyMessage={emptyState.message}
+              emptyDescription={emptyState.description}
+            />
 
-              {/* Pagination */}
-              <div className="border-t border-gray-200 dark:border-gray-700">
-                <DataTablePagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  pageSize={limit}
-                  totalItems={total}
-                  onPageChange={handlePageChange}
-                  onPageSizeChange={handlePageSizeChange}
-                  showPageSizeSelector={true}
-                />
-              </div>
-            </>
-          )}
-        </div>
+            {/* Pagination */}
+            <div className="border-t border-gray-200 dark:border-gray-700">
+              <DataTablePagination
+                currentPage={page}
+                totalPages={totalPages}
+                pageSize={limit}
+                totalItems={total}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                showPageSizeSelector={true}
+              />
+            </div>
+          </>
+        </DataTable>
 
         {/* Modals */}
         <ModalCreateUser
