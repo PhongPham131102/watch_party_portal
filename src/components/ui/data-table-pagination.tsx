@@ -95,41 +95,35 @@ export function DataTablePagination({
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-3 px-2 py-4 w-full overflow-x-auto">
-      <div className="flex items-center gap-5 shrink-0">
-        {/* Page size selector - Left */}
-        <div className="flex items-center gap-2 shrink-0">
-          {showPageSizeSelector && onPageSizeChange && (
-            <>
-              <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                Hiển thị
-              </p>
-              <Select
-                value={pageSize.toString()}
-                onValueChange={(value) => onPageSizeChange(Number(value))}>
-                <SelectTrigger className="h-9 w-[70px]">
-                  <SelectValue placeholder={pageSize} />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {pageSizeOptions.map((option) => (
-                    <SelectItem key={option} value={option.toString()}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                mục/trang
-              </p>
-            </>
-          )}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 bg-gray-50/50 dark:bg-gray-900/20">
+      {/* Left: Page info and size selector */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
+        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+          Hiển thị <span className="font-semibold">{startItem}</span> - <span className="font-semibold">{endItem}</span> trong{" "}
+          <span className="font-semibold text-blue-600 dark:text-blue-400">{totalItems}</span> kết quả
         </div>
-        -{/* Page info - Center */}
-        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap shrink-0">
-          Hiển thị <span className="font-medium">{startItem}</span> đến{" "}
-          <span className="font-medium">{endItem}</span> trong{" "}
-          <span className="font-medium">{totalItems}</span> kết quả
-        </div>
+        
+        {showPageSizeSelector && onPageSizeChange && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              Hiển thị:
+            </span>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) => onPageSizeChange(Number(value))}>
+              <SelectTrigger className="h-9 w-[75px]">
+                <SelectValue placeholder={pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {pageSizeOptions.map((option) => (
+                  <SelectItem key={option} value={option.toString()}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       {/* Pagination controls - Right */}

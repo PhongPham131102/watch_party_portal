@@ -50,11 +50,19 @@ const initialState: UserState = {
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (
-    params: { page?: number; limit?: number; search?: string } | undefined,
+    params: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      roleId?: string;
+      isActive?: boolean;
+      sortBy?: 'createdAt' | 'username' | 'email';
+      sortOrder?: 'ASC' | 'DESC';
+    } | undefined,
     { rejectWithValue }
   ) => {
     try {
-      const response = await userService.getUsers(params?.page, params?.limit, params?.search);
+      const response = await userService.getUsers(params);
       return response.data;
     } catch (error) {
       const err = error as { message?: string };
@@ -315,8 +323,15 @@ export const useUserStore = () => {
     createError,
     updateError,
     deleteError,
-    fetchUsers: (params?: { page?: number; limit?: number; search?: string }) =>
-      dispatch(fetchUsers(params)),
+    fetchUsers: (params?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      roleId?: string;
+      isActive?: boolean;
+      sortBy?: 'createdAt' | 'username' | 'email';
+      sortOrder?: 'ASC' | 'DESC';
+    }) => dispatch(fetchUsers(params)),
     fetchUserById: (id: string) => dispatch(fetchUserById(id)),
     createUser: async (user: CreateUserDto) => {
       const result = await dispatch(createUser(user));

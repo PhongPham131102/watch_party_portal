@@ -47,14 +47,28 @@ interface ApiResponse<T> {
   data: T;
 }
 
-export const userService = {
-  getUsers: async (page?: number, limit?: number, search?: string) => {
-    const params = new URLSearchParams();
-    if (page) params.append("page", page.toString());
-    if (limit) params.append("limit", limit.toString());
-    if (search) params.append("search", search);
+export interface FetchUsersParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  roleId?: string;
+  isActive?: boolean;
+  sortBy?: 'createdAt' | 'username' | 'email';
+  sortOrder?: 'ASC' | 'DESC';
+}
 
-    const url = `${API_BASE_URL}/users${params.toString() ? `?${params.toString()}` : ""}`;
+export const userService = {
+  getUsers: async (params?: FetchUsersParams) => {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.append("page", params.page.toString());
+    if (params?.limit) searchParams.append("limit", params.limit.toString());
+    if (params?.search) searchParams.append("search", params.search);
+    if (params?.roleId) searchParams.append("roleId", params.roleId);
+    if (params?.isActive !== undefined) searchParams.append("isActive", params.isActive.toString());
+    if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
+    if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
+
+    const url = `${API_BASE_URL}/users${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const response = await apiClient.get<ApiResponse<User[] | PaginatedUsers>>(url);
     return response.data;
   },
