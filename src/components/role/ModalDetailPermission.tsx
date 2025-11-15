@@ -154,26 +154,8 @@ function ModalDetailPermission({
         <div className="flex flex-col h-[80vh] overflow-hidden">
           <div className="flex-1 overflow-y-auto max-h-[90%] p-6 scrollbar-hide">
             <div className="flex flex-col gap-6">
-              <div className="px-4">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold text-gray-900 dark:text-white">
-                    Tên Vai trò
-                  </label>
-                  <input
-                    disabled={true}
-                    name="role-name"
-                    value={
-                      permissionData?.displayName || permissionData?.name || ""
-                    }
-                    type="text"
-                    placeholder="Tên vai trò..."
-                    className="w-full rounded-lg px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                <div className="w-full flex flex-row justify-between items-center px-2 py-3">
+              <div className="bg-gray-50 dark:bg-gray-800 px-4 py-1 rounded-lg">
+                <div className="w-full flex flex-row justify-between items-center px-2 py-1">
                   <p className="font-bold text-gray-900 dark:text-white truncate w-[40%]">
                     Tên phân quyền
                   </p>

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RBACModule, type Role } from "@/types";
+import { createSlug } from "@/utils/stringUtils";
 
 interface ModalEditPermissionProps {
   isOpen: boolean;
@@ -142,6 +143,7 @@ function ModalEditPermission({
     } else if (isAdd && isOpen) {
       clearForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isAdd, permissionData?.id]);
 
   const handleGetDetail = async () => {
@@ -186,6 +188,10 @@ function ModalEditPermission({
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!roleDisplayName.trim()) {
+      setRoleNameError("Tên hiển thị không được để trống");
+      return;
+    }
     if (!roleName.trim()) {
       setRoleNameError("Tên vai trò không được để trống");
       return;
@@ -251,34 +257,26 @@ function ModalEditPermission({
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1">
                     <Label className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Tên vai trò (code)
+                      Tên hiển thị
                     </Label>
                     <span className="text-sm text-red-600">(*)</span>
                   </div>
                   <Input
-                    name="role-name"
-                    value={roleName}
-                    onChange={(e) => setRoleName(e.target.value)}
+                    name="role-display-name"
+                    value={roleDisplayName}
+                    onChange={(e) => {
+                      const newDisplayName = e.target.value;
+                      setRoleDisplayName(newDisplayName);
+                      // Auto-generate slug from display name
+                      setRoleName(createSlug(newDisplayName));
+                    }}
                     type="text"
-                    placeholder="Nhập tên vai trò..."
+                    placeholder="Nhập tên hiển thị..."
                     className={roleNameError ? "border-red-500" : ""}
                   />
                   {roleNameError && (
                     <p className="text-sm text-red-600">{roleNameError}</p>
                   )}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <Label className="text-sm font-semibold text-gray-900 dark:text-white">
-                    Tên hiển thị
-                  </Label>
-                  <Input
-                    name="role-display-name"
-                    value={roleDisplayName}
-                    onChange={(e) => setRoleDisplayName(e.target.value)}
-                    type="text"
-                    placeholder="Nhập tên hiển thị..."
-                  />
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
@@ -295,8 +293,8 @@ function ModalEditPermission({
                 </div>
               </div>
 
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                <div className="w-full flex flex-row justify-between items-center px-2 py-3">
+              <div className="bg-gray-50 dark:bg-gray-800 px-4 py-1 rounded-lg">
+                <div className="w-full flex flex-row justify-between items-center px-2 py-1">
                   <p className="font-bold text-gray-900 dark:text-white truncate w-[40%]">
                     Tên phân quyền
                   </p>
