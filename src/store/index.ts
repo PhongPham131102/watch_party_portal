@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import roleReducer from './slices/roleSlice';
 import userReducer from './slices/userSlice';
+import genreReducer from './slices/genreSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     roles: roleReducer,
     users: userReducer,
+    genres: genreReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

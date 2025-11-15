@@ -28,4 +28,5 @@ export const APP_ROUTES = {
   ROOMS: "/rooms",
   COMMENTS: "/comments",
   ROLES: "/quyen-han",
+  GENRES: "/the-loai",
 } as const;

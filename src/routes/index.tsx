@@ -3,6 +3,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import RolesPage from "@/pages/Roles";
 import UsersPage from "@/pages/Users";
+import GenresPage from "@/pages/Genres";
 import { APP_ROUTES } from "@/constants";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 
@@ -41,6 +42,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <UsersPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={APP_ROUTES.GENRES}
+        element={
+          <ProtectedRoute>
+            <GenresPage />
           </ProtectedRoute>
         }
       />
