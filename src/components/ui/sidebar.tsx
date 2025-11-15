@@ -14,7 +14,6 @@ import {
   Film,
   UserCircle,
   Video,
-  Globe,
   MessageSquare,
   Shield,
 } from "lucide-react";
@@ -71,20 +70,6 @@ const menuItemsConfig: MenuItem[] = [
     label: "Quản lý diễn viên",
     path: APP_ROUTES.ACTORS,
     module: RBACModule.ACTORS,
-    action: RBACAction.READ,
-  },
-  {
-    icon: Video,
-    label: "Quản lý đạo diễn",
-    path: APP_ROUTES.DIRECTORS,
-    module: RBACModule.DIRECTORS,
-    action: RBACAction.READ,
-  },
-  {
-    icon: Globe,
-    label: "Quản lý quốc gia",
-    path: APP_ROUTES.COUNTRIES,
-    module: RBACModule.COUNTRIES,
     action: RBACAction.READ,
   },
   {
