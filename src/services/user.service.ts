@@ -46,10 +46,11 @@ interface ApiResponse<T> {
 }
 
 export const userService = {
-  getUsers: async (page?: number, limit?: number) => {
+  getUsers: async (page?: number, limit?: number, search?: string) => {
     const params = new URLSearchParams();
     if (page) params.append("page", page.toString());
     if (limit) params.append("limit", limit.toString());
+    if (search) params.append("search", search);
 
     const url = `${API_BASE_URL}/users${params.toString() ? `?${params.toString()}` : ""}`;
     const response = await apiClient.get<ApiResponse<User[] | PaginatedUsers>>(url);

@@ -17,6 +17,7 @@ interface UserState {
   limit: number;
   totalPages: number;
   isLoading: boolean;
+  isFetchingDetail: boolean;
   isCreating: boolean;
   isUpdating: boolean;
   isDeleting: boolean;
@@ -31,6 +32,7 @@ const initialState: UserState = {
   limit: 10,
   totalPages: 0,
   isLoading: false,
+  isFetchingDetail: false,
   isCreating: false,
   isUpdating: false,
   isDeleting: false,
@@ -40,11 +42,11 @@ const initialState: UserState = {
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (
-    params: { page?: number; limit?: number } | undefined,
+    params: { page?: number; limit?: number; search?: string } | undefined,
     { rejectWithValue }
   ) => {
     try {
-      const response = await userService.getUsers(params?.page, params?.limit);
+      const response = await userService.getUsers(params?.page, params?.limit, params?.search);
       return response.data;
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
@@ -171,15 +173,15 @@ const userSlice = createSlice({
       })
       // Fetch user by ID
       .addCase(fetchUserById.pending, (state) => {
-        state.isLoading = true;
+        state.isFetchingDetail = true;
         state.error = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action: PayloadAction<User>) => {
-        state.isLoading = false;
+        state.isFetchingDetail = false;
         state.currentUser = action.payload;
       })
       .addCase(fetchUserById.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isFetchingDetail = false;
         state.error = action.payload as string;
       })
       // Create user
@@ -265,6 +267,7 @@ export const useUserStore = () => {
   const limit = useAppSelector((state) => state.users.limit);
   const totalPages = useAppSelector((state) => state.users.totalPages);
   const isLoading = useAppSelector((state) => state.users.isLoading);
+  const isFetchingDetail = useAppSelector((state) => state.users.isFetchingDetail);
   const isCreating = useAppSelector((state) => state.users.isCreating);
   const isUpdating = useAppSelector((state) => state.users.isUpdating);
   const isDeleting = useAppSelector((state) => state.users.isDeleting);
@@ -279,11 +282,12 @@ export const useUserStore = () => {
     limit,
     totalPages,
     isLoading,
+    isFetchingDetail,
     isCreating,
     isUpdating,
     isDeleting,
     error,
-    fetchUsers: (params?: { page?: number; limit?: number }) =>
+    fetchUsers: (params?: { page?: number; limit?: number; search?: string }) =>
       dispatch(fetchUsers(params)),
     fetchUserById: (id: string) => dispatch(fetchUserById(id)),
     createUser: async (user: CreateUserDto) => {
