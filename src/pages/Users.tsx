@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/slices/userSlice";
 import { useRoleStore } from "@/store/slices/roleSlice";
-import { usePermission, useUserFilters } from "@/hooks";
+import { usePermission, useTableFiltersWithURL } from "@/hooks";
 import { RBACModule } from "@/types";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DataTable } from "@/components/common";
@@ -21,21 +21,19 @@ export default function UsersPage() {
   const {
     users,
     total,
-    page,
-    limit,
+    page: currentPage,
+    limit: currentLimit,
     totalPages,
     isLoading,
     error,
     fetchUsers,
   } = useUserStore();
 
+  type UserSortKey = 'createdAt' | 'username' | 'email';
+
   const {
     searchTerm,
     setSearchTerm,
-    selectedRoleFilter,
-    setSelectedRoleFilter,
-    selectedStatusFilter,
-    setSelectedStatusFilter,
     sortBy,
     sortOrder,
     debouncedSearchTerm,
@@ -44,7 +42,27 @@ export default function UsersPage() {
     clearFilters,
     hasActiveFilters,
     isSearching,
-  } = useUserFilters();
+    page: urlPage,
+    limit: urlLimit,
+    customFilters,
+    setFilter,
+  } = useTableFiltersWithURL<UserSortKey>({
+    defaultSortBy: 'createdAt',
+    defaultSortOrder: 'DESC',
+  });
+
+  const selectedRoleFilter = (customFilters.roleId as string) || 'all';
+  const selectedStatusFilter = customFilters.isActive !== undefined 
+    ? String(customFilters.isActive) 
+    : 'all';
+
+  const setSelectedRoleFilter = (value: string) => {
+    setFilter('roleId', value === 'all' ? undefined : value);
+  };
+
+  const setSelectedStatusFilter = (value: string) => {
+    setFilter('isActive', value === 'all' ? undefined : value === 'true');
+  };
 
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
@@ -67,17 +85,17 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (canAccessPage) {
-      fetchUsers(buildFilters(1, 10));
+      fetchUsers(buildFilters(urlPage, urlLimit));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canAccessPage, debouncedSearchTerm, selectedRoleFilter, selectedStatusFilter, sortBy, sortOrder]);
+  }, [canAccessPage, debouncedSearchTerm, selectedRoleFilter, selectedStatusFilter, sortBy, sortOrder, urlPage, urlLimit]);
 
   const handleRefresh = () => {
-    fetchUsers(buildFilters(page, limit));
+    fetchUsers(buildFilters(urlPage, urlLimit));
   };
 
   const handlePageChange = (newPage: number) => {
-    fetchUsers(buildFilters(newPage, limit));
+    fetchUsers(buildFilters(newPage, urlLimit));
   };
 
   const handlePageSizeChange = (newPageSize: number) => {
@@ -156,8 +174,8 @@ export default function UsersPage() {
           <>
             <UserTable
               users={users}
-              sortBy={sortBy}
-              sortOrder={sortOrder}
+              sortBy={sortBy || 'createdAt'}
+              sortOrder={sortOrder || 'DESC'}
               onSort={handleSort}
               onView={handleViewUser}
               onEdit={handleEditUser}
@@ -169,9 +187,9 @@ export default function UsersPage() {
             {/* Pagination */}
             <div className="border-t border-gray-200 dark:border-gray-700">
               <DataTablePagination
-                currentPage={page}
+                currentPage={currentPage}
                 totalPages={totalPages}
-                pageSize={limit}
+                pageSize={currentLimit}
                 totalItems={total}
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
