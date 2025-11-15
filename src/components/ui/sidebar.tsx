@@ -18,8 +18,8 @@ import {
   Shield,
 } from "lucide-react";
 import { APP_ROUTES } from "@/constants";
-import { useAbility } from "@casl/react";
-import { AbilityContext } from "@/lib/Can";
+import { useAppSelector } from "@/store/hooks";
+import { defineAbilityFor } from "@/lib/ability";
 import {
   RBACModule,
   RBACAction,
@@ -95,12 +95,21 @@ const menuItemsConfig: MenuItem[] = [
   },
 ];
 
-// Filter menu items based on user permissions using CASL ability
+// Filter menu items based on user permissions
 const useFilteredMenuItems = (): MenuItem[] => {
-  // Sử dụng useAbility từ CASL - cách chuẩn
-  const ability = useAbility(AbilityContext);
-
+  // Lấy permissions trực tiếp và tạo ability mới mỗi lần permissions thay đổi
+  const permissions = useAppSelector((state) => state.auth.permissions);
+  const user = useAppSelector((state) => state.auth.user);
+  
   return React.useMemo(() => {
+    // Nếu chưa có user hoặc permissions, chỉ hiển thị Dashboard
+    if (!user || !permissions || Object.keys(permissions).length === 0) {
+      return menuItemsConfig.filter((item) => item.path === APP_ROUTES.HOME);
+    }
+
+    // Tạo ability mới từ permissions hiện tại
+    const ability = defineAbilityFor(permissions);
+    
     return menuItemsConfig.filter((item: MenuItem) => {
       // Dashboard is always visible
       if (item.path === APP_ROUTES.HOME) {
@@ -116,7 +125,7 @@ const useFilteredMenuItems = (): MenuItem[] => {
       const action = item.action || RBACAction.READ;
       return ability.can(action, item.module);
     });
-  }, [ability]);
+  }, [permissions, user]);
 };
 
 export function Sidebar({

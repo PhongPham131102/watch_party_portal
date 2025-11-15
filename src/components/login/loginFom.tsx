@@ -37,7 +37,9 @@ export function LoginForm({ className }: React.ComponentProps<"div">) {
   async function onSubmit(data: LoginFormValues) {
     try {
       await dispatch(loginUser(data)).unwrap();
+
       showToast.success("Đăng nhập thành công", "Chào mừng bạn quay trở lại!");
+
       navigate("/", { replace: true });
     } catch (err) {
       console.log("Login error:", err);
