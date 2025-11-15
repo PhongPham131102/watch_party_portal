@@ -2,8 +2,6 @@ export const RBACModule = {
   USERS: 'users',
   MOVIES: 'movies',
   ACTORS: 'actors',
-  DIRECTORS: 'directors',
-  COUNTRIES: 'countries',
   ROOMS: 'rooms',
   COMMENTS: 'comments',
   ROLES: 'roles',

@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/Logo";
 import { useNavigate } from "react-router-dom";
-import { 
-  Home, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  Home,
+  ChevronLeft,
+  ChevronRight,
   LogOut,
   Users,
   Film,
@@ -16,12 +16,17 @@ import {
   Video,
   Globe,
   MessageSquare,
-  Shield
+  Shield,
 } from "lucide-react";
 import { APP_ROUTES } from "@/constants";
 import { useAbility } from "@casl/react";
 import { AbilityContext } from "@/lib/Can";
-import { RBACModule, RBACAction } from "@/types";
+import {
+  RBACModule,
+  RBACAction,
+  type RBACModuleType,
+  type RBACActionType,
+} from "@/types";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -35,8 +40,8 @@ interface MenuItem {
   label: string;
   path: string;
   badge?: string;
-  module?: string; // RBAC module
-  action?: string; // RBAC action (default: 'read')
+  module?: RBACModuleType; // RBAC module
+  action?: RBACActionType; // RBAC action (default: 'read')
 }
 
 // Menu items configuration with RBAC permissions
@@ -50,56 +55,56 @@ const menuItemsConfig: MenuItem[] = [
   {
     icon: Users,
     label: "Quản lý người dùng",
-    path: "/users",
+    path: APP_ROUTES.USERS,
     module: RBACModule.USERS,
     action: RBACAction.READ,
   },
   {
     icon: Film,
     label: "Quản lý phim",
-    path: "/movies",
+    path: APP_ROUTES.MOVIES,
     module: RBACModule.MOVIES,
     action: RBACAction.READ,
   },
   {
     icon: UserCircle,
     label: "Quản lý diễn viên",
-    path: "/actors",
+    path: APP_ROUTES.ACTORS,
     module: RBACModule.ACTORS,
     action: RBACAction.READ,
   },
   {
     icon: Video,
     label: "Quản lý đạo diễn",
-    path: "/directors",
+    path: APP_ROUTES.DIRECTORS,
     module: RBACModule.DIRECTORS,
     action: RBACAction.READ,
   },
   {
     icon: Globe,
     label: "Quản lý quốc gia",
-    path: "/countries",
+    path: APP_ROUTES.COUNTRIES,
     module: RBACModule.COUNTRIES,
     action: RBACAction.READ,
   },
   {
     icon: Video,
     label: "Quản lý phòng",
-    path: "/rooms",
+    path: APP_ROUTES.ROOMS,
     module: RBACModule.ROOMS,
     action: RBACAction.READ,
   },
   {
     icon: MessageSquare,
     label: "Quản lý bình luận",
-    path: "/comments",
+    path: APP_ROUTES.COMMENTS,
     module: RBACModule.COMMENTS,
     action: RBACAction.READ,
   },
   {
     icon: Shield,
     label: "Quản lý vai trò",
-    path: "/roles",
+    path: APP_ROUTES.ROLES,
     module: RBACModule.ROLES,
     action: RBACAction.READ,
   },
@@ -111,7 +116,7 @@ const useFilteredMenuItems = (): MenuItem[] => {
   const ability = useAbility(AbilityContext);
 
   return React.useMemo(() => {
-    return menuItemsConfig.filter((item) => {
+    return menuItemsConfig.filter((item: MenuItem) => {
       // Dashboard is always visible
       if (item.path === APP_ROUTES.HOME) {
         return true;
@@ -124,7 +129,7 @@ const useFilteredMenuItems = (): MenuItem[] => {
 
       // Check if user has permission using CASL ability
       const action = item.action || RBACAction.READ;
-      return ability.can(action as any, item.module as any);
+      return ability.can(action, item.module);
     });
   }, [ability]);
 };
@@ -137,7 +142,7 @@ export function Sidebar({
 }: SidebarProps) {
   const navigate = useNavigate();
   const filteredMenuItems = useFilteredMenuItems();
-  
+
   return (
     <div
       className={cn(

@@ -25,5 +25,5 @@ export const APP_ROUTES = {
   COUNTRIES: "/countries",
   ROOMS: "/rooms",
   COMMENTS: "/comments",
-  ROLES: "/roles",
+  ROLES: "/quyen-han",
 } as const;
