@@ -134,6 +134,7 @@ function ModalDetailPermission({
     if (isOpen) {
       handleGetDetail();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleOnComplete = () => {
@@ -150,8 +151,8 @@ function ModalDetailPermission({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col h-[80vh] overflow-y-auto">
-          <div className="flex-1 overflow-y-auto max-h-[90%] p-6">
+        <div className="flex flex-col h-[80vh] overflow-hidden">
+          <div className="flex-1 overflow-y-auto max-h-[90%] p-6 scrollbar-hide">
             <div className="flex flex-col gap-6">
               <div className="px-4">
                 <div className="flex flex-col gap-2">

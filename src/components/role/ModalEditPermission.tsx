@@ -239,7 +239,7 @@ function ModalEditPermission({
         </DialogHeader>
 
         <form onSubmit={handleSubmitForm} className="flex flex-col h-[80vh]">
-          <div className="flex-1 h-[80vh] p-6 overflow-y-auto">
+          <div className="flex-1 h-[80vh] p-6 overflow-y-auto scrollbar-hide">
             <div className="flex flex-col gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
                 <div className="flex flex-col gap-2">
