@@ -69,6 +69,7 @@ export default function ModalCreateUser({
         username: data.username,
         password: data.password,
         email: data.email,
+        roleId: data.roleId,
       };
       const success = await createUser(userData);
 

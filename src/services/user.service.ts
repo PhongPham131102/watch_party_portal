@@ -22,6 +22,7 @@ export interface CreateUserDto {
   email: string;
   username: string;
   password: string;
+  roleId?: string;
 }
 
 export interface UpdateUserDto {
@@ -29,6 +30,7 @@ export interface UpdateUserDto {
   username?: string;
   password?: string;
   isActive?: boolean;
+  roleId?: string;
 }
 
 export interface PaginatedUsers {

@@ -95,6 +95,7 @@ export default function ModalEditUser({
         username: data.username,
         email: data.email || undefined,
         isActive: data.isActive,
+        roleId: data.roleId || undefined,
         ...(data.password && { password: data.password }),
       };
 
