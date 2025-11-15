@@ -13,6 +13,7 @@ export interface UseTableFiltersWithURLOptions<T = string> {
   defaultPage?: number;
   defaultLimit?: number;
   debounceMs?: number;
+  validSortKeys?: T[]; // Optional: List of valid sort keys for validation
 }
 
 export function useTableFiltersWithURL<T = string>(
@@ -24,6 +25,7 @@ export function useTableFiltersWithURL<T = string>(
     defaultPage = 1,
     defaultLimit = 10,
     debounceMs = 500,
+    validSortKeys,
   } = options;
 
   const defaultParams: TableFiltersWithURLConfig = {
@@ -35,6 +37,11 @@ export function useTableFiltersWithURL<T = string>(
 
   const [urlParams, setURLParams] = useURLParams<TableFiltersWithURLConfig>(defaultParams);
   
+  // Validate sortBy from URL
+  const validatedSortBy = urlParams.sortBy && validSortKeys 
+    ? (validSortKeys.includes(urlParams.sortBy as T) ? urlParams.sortBy : defaultParams.sortBy)
+    : urlParams.sortBy;
+
   const [searchTerm, setSearchTerm] = useState(urlParams.search || "");
   const [customFilters, setCustomFilters] = useState<Record<string, unknown>>(() => {
     // Initialize custom filters from URL
@@ -54,7 +61,7 @@ export function useTableFiltersWithURL<T = string>(
     const filters: Partial<TableFiltersWithURLConfig> = {
       page: 1, // Reset to page 1 when search changes
       limit: urlParams.limit,
-      sortBy: urlParams.sortBy,
+      sortBy: validatedSortBy,
       sortOrder: urlParams.sortOrder,
       ...customFilters,
     };
@@ -174,8 +181,8 @@ export function useTableFiltersWithURL<T = string>(
     debouncedSearchTerm,
     isSearching,
 
-    // Sort
-    sortBy: (urlParams.sortBy as T) || defaultSortBy,
+    // Sort (with validation)
+    sortBy: (validatedSortBy as T) || defaultSortBy,
     sortOrder: urlParams.sortOrder || defaultSortOrder,
     handleSort,
 
@@ -184,7 +191,7 @@ export function useTableFiltersWithURL<T = string>(
     setFilter,
     removeFilter,
 
-    // Pagination from URL
+    // Pagination from URL (already validated in useURLParams)
     page: urlParams.page || defaultPage,
     limit: urlParams.limit || defaultLimit,
 

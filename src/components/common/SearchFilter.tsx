@@ -76,7 +76,7 @@ export function SearchFilter({
                     variant="ghost"
                     size="sm"
                     onClick={onClearFilters}
-                    className="h-9 px-3 gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
+                    className="cursor-pointer h-9 px-3 gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20">
                     <X className="h-4 w-4" />
                     <span className="hidden sm:inline">Xóa bộ lọc</span>
                   </Button>

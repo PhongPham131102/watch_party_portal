@@ -179,6 +179,7 @@ export default function UsersPage() {
     defaultPage: 1,
     defaultLimit: 10,
     debounceMs: 500,
+    validSortKeys: ['createdAt', 'username', 'email'], // Validate sort keys
   });
 
   // Custom filters từ customFilters object
@@ -210,6 +211,7 @@ export default function UsersPage() {
 **Features:**
 - ✅ **Immediate URL sync** - Mọi thay đổi filter đều update URL ngay lập tức
 - ✅ **Bidirectional sync** - URL ↔ State sync hoàn toàn
+- ✅ **URL validation** - Tự động validate và sanitize URL params
 - ✅ **Generic & Reusable** - Dùng cho tất cả trang quản lý
 - ✅ **Auto reset to page 1** khi filter thay đổi
 - ✅ **Debounced search** (500ms default)
@@ -397,7 +399,52 @@ Khi sử dụng `useTableFiltersWithURL`, URL sẽ có format:
    /users?page=1&limit=10&sortBy=createdAt&sortOrder=DESC
 
 7. User reloads page → All filters restored from URL!
+
+8. User manually edits URL with invalid data:
+   /users?page=abc&limit=999&sortBy=invalid&roleId=<script>
+   → Validated to: /users?page=1&limit=100&sortBy=createdAt
 ```
+
+## 🛡️ URL Validation
+
+Hook tự động validate và sanitize tất cả URL params:
+
+### Validation Rules:
+
+| Param | Validation | Default on Invalid |
+|---|---|---|
+| **page** | Integer ≥ 1 | defaultPage (1) |
+| **limit** | Integer: 1-100 | defaultLimit (10) |
+| **sortBy** | Must be in validSortKeys | defaultSortBy |
+| **sortOrder** | Must be 'ASC' or 'DESC' | defaultSortOrder ('DESC') |
+| **search** | Max 200 characters, trimmed | Empty string |
+| **isActive** | Must be 'true' or 'false' | undefined |
+| **Custom** | Max 100 characters, trimmed | undefined |
+
+### Examples:
+
+```typescript
+// ❌ Invalid URL
+/users?page=-1&limit=abc&sortBy=hacker&search=<script>alert('xss')</script>
+
+// ✅ Auto-validated to
+/users?page=1&limit=10&sortBy=createdAt
+
+// ❌ Invalid URL
+/users?page=999999&limit=1000&sortOrder=RANDOM
+
+// ✅ Auto-validated to
+/users?page=999999&limit=100&sortOrder=DESC
+```
+
+### Security Features:
+
+- ✅ **XSS Prevention** - Trim and sanitize all string inputs
+- ✅ **SQL Injection Prevention** - Validate sortBy against whitelist
+- ✅ **Type Coercion** - Ensure correct data types
+- ✅ **Length Limits** - Prevent buffer overflow attacks
+- ✅ **Range Validation** - Limit numeric values to reasonable ranges
+- ✅ **Console Warnings** - Log invalid params for debugging
 
 ## 📋 Best Practices
 

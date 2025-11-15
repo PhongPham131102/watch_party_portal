@@ -49,6 +49,7 @@ export default function UsersPage() {
   } = useTableFiltersWithURL<UserSortKey>({
     defaultSortBy: 'createdAt',
     defaultSortOrder: 'DESC',
+    validSortKeys: ['createdAt', 'username', 'email'], // Validate sort keys from URL
   });
 
   const selectedRoleFilter = (customFilters.roleId as string) || 'all';
