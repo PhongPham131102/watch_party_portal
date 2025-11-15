@@ -7,41 +7,15 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-/**
- * ProtectedRoute Component
- * 
- * Bảo vệ các route chỉ dành cho người dùng đã đăng nhập.
- * Nếu chưa đăng nhập, redirect về trang login.
- * Tự động bọc children trong DashboardLayout.
- * 
- * Check authentication bằng cách:
- * 1. Kiểm tra accessToken trong localStorage (persistent across tabs/reload)
- * 2. Kiểm tra user trong Redux (đã được load bởi AuthProvider)
- * 
- * @example
- * <Route 
- *   path="/dashboard" 
- *   element={
- *     <ProtectedRoute>
- *       <Dashboard />
- *     </ProtectedRoute>
- *   } 
- * />
- */
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user } = useAppSelector((state) => state.auth);
   const location = useLocation();
-  
-  // Check accessToken from localStorage (persistent)
   const accessToken = localStorage.getItem("accessToken");
 
-  // Chưa đăng nhập (không có token hoặc không có user) -> redirect về login
-  // Lưu location hiện tại để redirect về sau khi login
   if (!accessToken || !user) {
     return <Navigate to={APP_ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  // Đã đăng nhập -> cho phép truy cập với DashboardLayout
   return <DashboardLayout>{children}</DashboardLayout>;
 }
 

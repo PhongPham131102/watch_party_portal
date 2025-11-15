@@ -55,7 +55,6 @@ apiClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Skip refresh token logic cho auth endpoints (login, register)
     const isAuthEndpoint =
       originalRequest.url?.includes(API_ENDPOINTS.AUTH.LOGIN) ||
       originalRequest.url?.includes(API_ENDPOINTS.AUTH.REGISTER);
@@ -64,9 +63,7 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Xử lý 401 cho các API khác (token hết hạn)
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // Nếu đang refresh, đưa vào queue
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });

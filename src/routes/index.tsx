@@ -7,7 +7,6 @@ import { ProtectedRoute, PublicRoute } from "@/components/common";
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes - Chỉ cho người chưa đăng nhập */}
       <Route
         path={APP_ROUTES.LOGIN}
         element={
@@ -17,7 +16,6 @@ export function AppRoutes() {
         }
       />
 
-      {/* Protected routes - Chỉ cho người đã đăng nhập */}
       <Route
         path={APP_ROUTES.HOME}
         element={
@@ -27,7 +25,6 @@ export function AppRoutes() {
         }
       />
 
-      {/* Fallback route - Redirect về home */}
       <Route path="*" element={<Navigate to={APP_ROUTES.HOME} replace />} />
     </Routes>
   );

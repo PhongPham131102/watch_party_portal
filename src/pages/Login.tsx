@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-
 import { LoginForm } from "@/components/login/loginFom";
 import Logo from "@/components/ui/Logo";
 

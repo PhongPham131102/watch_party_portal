@@ -4,9 +4,6 @@ import type { Permissions, RBACActionType, RBACModuleType } from '@/types';
 
 export type AppAbility = MongoAbility<[RBACActionType, RBACModuleType]>;
 
-/**
- * Tạo ability từ permissions backend trả về
- */
 export function defineAbilityFor(permissions: Permissions): AppAbility {
   const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
@@ -14,12 +11,10 @@ export function defineAbilityFor(permissions: Permissions): AppAbility {
     return build();
   }
 
-  // Duyệt qua từng module và actions
   Object.entries(permissions).forEach(([module, actions]) => {
     if (!Array.isArray(actions)) return;
 
     actions.forEach((action) => {
-      // Nếu có 'manage' thì có toàn quyền trên module đó
       if (action === 'manage') {
         can('manage', module as RBACModuleType);
       } else {

@@ -1,5 +1,3 @@
-"use client";
-
 import { cn, showToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +43,6 @@ export function LoginForm({ className }: React.ComponentProps<"div">) {
         "Đăng nhập thất bại",
         "Tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại!"
       );
-      // Error handled by useEffect
     }
   }
 
