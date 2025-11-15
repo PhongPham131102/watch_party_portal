@@ -7,6 +7,9 @@ import { authService } from "@/services/auth.service";
 
 interface AuthStateWithAbility extends AuthState {
   ability: AppAbility;
+  loginError: string | null;
+  getCurrentUserError: string | null;
+  logoutError: string | null;
 }
 
 const initialState: AuthStateWithAbility = {
@@ -17,6 +20,9 @@ const initialState: AuthStateWithAbility = {
   accessToken: localStorage.getItem("accessToken"),
   loading: false,
   error: null,
+  loginError: null,
+  getCurrentUserError: null,
+  logoutError: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -83,11 +89,24 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       localStorage.setItem("accessToken", action.payload.accessToken);
     },
+
+    clearLoginError: (state) => {
+      state.loginError = null;
+    },
+
+    clearGetCurrentUserError: (state) => {
+      state.getCurrentUserError = null;
+    },
+
+    clearLogoutError: (state) => {
+      state.logoutError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
+        state.loginError = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -97,11 +116,13 @@ const authSlice = createSlice({
         state.ability = defineAbilityFor(action.payload.permissions);
         state.accessToken = action.payload.accessToken;
       })
-      .addCase(loginUser.rejected, (state, _action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
+        state.loginError = action.payload as string;
       })
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
+        state.getCurrentUserError = null;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -111,14 +132,18 @@ const authSlice = createSlice({
         state.ability = defineAbilityFor(action.payload.permissions);
         state.accessToken = action.payload.accessToken;
       })
-      .addCase(getCurrentUser.rejected, (state, _action) => {
+      .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
+        state.getCurrentUserError = action.payload as string;
         state.user = null;
         state.role = null;
         state.permissions = {};
         state.ability = defineAbilityFor({});
         state.accessToken = null;
         localStorage.removeItem("accessToken");
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.logoutError = null;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
@@ -128,7 +153,8 @@ const authSlice = createSlice({
         state.accessToken = null;
         localStorage.removeItem("accessToken");
       })
-      .addCase(logoutUser.rejected, (state) => {
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.logoutError = action.payload as string;
         state.user = null;
         state.role = null;
         state.permissions = {};
@@ -139,5 +165,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setCredentials } = authSlice.actions;
+export const { logout, setCredentials, clearLoginError, clearGetCurrentUserError, clearLogoutError } = authSlice.actions;
 export default authSlice.reducer;

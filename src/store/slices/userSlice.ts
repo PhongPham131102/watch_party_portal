@@ -22,6 +22,10 @@ interface UserState {
   isUpdating: boolean;
   isDeleting: boolean;
   error: string | null;
+  fetchDetailError: string | null;
+  createError: string | null;
+  updateError: string | null;
+  deleteError: string | null;
 }
 
 const initialState: UserState = {
@@ -37,6 +41,10 @@ const initialState: UserState = {
   isUpdating: false,
   isDeleting: false,
   error: null,
+  fetchDetailError: null,
+  createError: null,
+  updateError: null,
+  deleteError: null,
 };
 
 export const fetchUsers = createAsyncThunk(
@@ -145,6 +153,18 @@ const userSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    clearFetchDetailError: (state) => {
+      state.fetchDetailError = null;
+    },
+    clearCreateError: (state) => {
+      state.createError = null;
+    },
+    clearUpdateError: (state) => {
+      state.updateError = null;
+    },
+    clearDeleteError: (state) => {
+      state.deleteError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -174,7 +194,7 @@ const userSlice = createSlice({
       // Fetch user by ID
       .addCase(fetchUserById.pending, (state) => {
         state.isFetchingDetail = true;
-        state.error = null;
+        state.fetchDetailError = null;
       })
       .addCase(fetchUserById.fulfilled, (state, action: PayloadAction<User>) => {
         state.isFetchingDetail = false;
@@ -182,12 +202,12 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.isFetchingDetail = false;
-        state.error = action.payload as string;
+        state.fetchDetailError = action.payload as string;
       })
       // Create user
       .addCase(createUser.pending, (state) => {
         state.isCreating = true;
-        state.error = null;
+        state.createError = null;
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.isCreating = false;
@@ -196,12 +216,12 @@ const userSlice = createSlice({
       })
       .addCase(createUser.rejected, (state, action) => {
         state.isCreating = false;
-        state.error = action.payload as string;
+        state.createError = action.payload as string;
       })
       // Update user
       .addCase(updateUser.pending, (state) => {
         state.isUpdating = true;
-        state.error = null;
+        state.updateError = null;
       })
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.isUpdating = false;
@@ -215,12 +235,12 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isUpdating = false;
-        state.error = action.payload as string;
+        state.updateError = action.payload as string;
       })
       // Toggle user active
       .addCase(toggleUserActive.pending, (state) => {
         state.isUpdating = true;
-        state.error = null;
+        state.updateError = null;
       })
       .addCase(
         toggleUserActive.fulfilled,
@@ -236,12 +256,12 @@ const userSlice = createSlice({
       )
       .addCase(toggleUserActive.rejected, (state, action) => {
         state.isUpdating = false;
-        state.error = action.payload as string;
+        state.updateError = action.payload as string;
       })
       // Delete user
       .addCase(deleteUser.pending, (state) => {
         state.isDeleting = true;
-        state.error = null;
+        state.deleteError = null;
       })
       .addCase(deleteUser.fulfilled, (state, action: PayloadAction<string>) => {
         state.isDeleting = false;
@@ -250,12 +270,12 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.isDeleting = false;
-        state.error = action.payload as string;
+        state.deleteError = action.payload as string;
       });
   },
 });
 
-export const { clearCurrentUser, clearError } = userSlice.actions;
+export const { clearCurrentUser, clearError, clearFetchDetailError, clearCreateError, clearUpdateError, clearDeleteError } = userSlice.actions;
 export default userSlice.reducer;
 
 // Selectors
@@ -272,6 +292,10 @@ export const useUserStore = () => {
   const isUpdating = useAppSelector((state) => state.users.isUpdating);
   const isDeleting = useAppSelector((state) => state.users.isDeleting);
   const error = useAppSelector((state) => state.users.error);
+  const fetchDetailError = useAppSelector((state) => state.users.fetchDetailError);
+  const createError = useAppSelector((state) => state.users.createError);
+  const updateError = useAppSelector((state) => state.users.updateError);
+  const deleteError = useAppSelector((state) => state.users.deleteError);
   const dispatch = useAppDispatch();
 
   return {
@@ -287,6 +311,10 @@ export const useUserStore = () => {
     isUpdating,
     isDeleting,
     error,
+    fetchDetailError,
+    createError,
+    updateError,
+    deleteError,
     fetchUsers: (params?: { page?: number; limit?: number; search?: string }) =>
       dispatch(fetchUsers(params)),
     fetchUserById: (id: string) => dispatch(fetchUserById(id)),
@@ -308,5 +336,9 @@ export const useUserStore = () => {
     },
     clearCurrentUser: () => dispatch(clearCurrentUser()),
     clearError: () => dispatch(clearError()),
+    clearFetchDetailError: () => dispatch(clearFetchDetailError()),
+    clearCreateError: () => dispatch(clearCreateError()),
+    clearUpdateError: () => dispatch(clearUpdateError()),
+    clearDeleteError: () => dispatch(clearDeleteError()),
   };
 };

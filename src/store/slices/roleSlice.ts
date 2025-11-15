@@ -9,7 +9,11 @@ interface RoleState {
   isLoading: boolean;
   isCreating: boolean;
   isUpdating: boolean;
+  isDeleting: boolean;
   error: string | null;
+  createError: string | null;
+  updateError: string | null;
+  deleteError: string | null;
 }
 
 const initialState: RoleState = {
@@ -17,7 +21,11 @@ const initialState: RoleState = {
   isLoading: false,
   isCreating: false,
   isUpdating: false,
+  isDeleting: false,
   error: null,
+  createError: null,
+  updateError: null,
+  deleteError: null,
 };
 
 export const fetchRoles = createAsyncThunk("roles/fetchRoles", async (_, { rejectWithValue }) => {
@@ -68,7 +76,20 @@ export const deleteRole = createAsyncThunk(
 const roleSlice = createSlice({
   name: "roles",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearCreateError: (state) => {
+      state.createError = null;
+    },
+    clearUpdateError: (state) => {
+      state.updateError = null;
+    },
+    clearDeleteError: (state) => {
+      state.deleteError = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRoles.pending, (state) => {
@@ -85,7 +106,7 @@ const roleSlice = createSlice({
       })
       .addCase(createRole.pending, (state) => {
         state.isCreating = true;
-        state.error = null;
+        state.createError = null;
       })
       .addCase(createRole.fulfilled, (state, action: PayloadAction<Role>) => {
         state.isCreating = false;
@@ -93,11 +114,11 @@ const roleSlice = createSlice({
       })
       .addCase(createRole.rejected, (state) => {
         state.isCreating = false;
-        state.error = "Không thể tạo vai trò mới";
+        state.createError = "Không thể tạo vai trò mới";
       })
       .addCase(updateRole.pending, (state) => {
         state.isUpdating = true;
-        state.error = null;
+        state.updateError = null;
       })
       .addCase(updateRole.fulfilled, (state, action: PayloadAction<Role>) => {
         state.isUpdating = false;
@@ -108,17 +129,24 @@ const roleSlice = createSlice({
       })
       .addCase(updateRole.rejected, (state) => {
         state.isUpdating = false;
-        state.error = "Không thể cập nhật vai trò";
+        state.updateError = "Không thể cập nhật vai trò";
+      })
+      .addCase(deleteRole.pending, (state) => {
+        state.isDeleting = true;
+        state.deleteError = null;
       })
       .addCase(deleteRole.fulfilled, (state, action: PayloadAction<string>) => {
+        state.isDeleting = false;
         state.roles = state.roles.filter((r) => r.id !== action.payload);
       })
       .addCase(deleteRole.rejected, (state) => {
-        state.error = "Không thể xóa vai trò";
+        state.isDeleting = false;
+        state.deleteError = "Không thể xóa vai trò";
       });
   },
 });
 
+export const { clearError, clearCreateError, clearUpdateError, clearDeleteError } = roleSlice.actions;
 export default roleSlice.reducer;
 
 // Selectors
@@ -127,7 +155,11 @@ export const useRoleStore = () => {
   const isLoading = useAppSelector((state) => state.roles.isLoading);
   const isCreating = useAppSelector((state) => state.roles.isCreating);
   const isUpdating = useAppSelector((state) => state.roles.isUpdating);
+  const isDeleting = useAppSelector((state) => state.roles.isDeleting);
   const error = useAppSelector((state) => state.roles.error);
+  const createError = useAppSelector((state) => state.roles.createError);
+  const updateError = useAppSelector((state) => state.roles.updateError);
+  const deleteError = useAppSelector((state) => state.roles.deleteError);
   const dispatch = useAppDispatch();
 
   return {
@@ -135,7 +167,11 @@ export const useRoleStore = () => {
     isLoading,
     isCreating,
     isUpdating,
+    isDeleting,
     error,
+    createError,
+    updateError,
+    deleteError,
     fetchRoles: () => dispatch(fetchRoles()),
     createRole: async (role: CreateRoleDto) => {
       const result = await dispatch(createRole(role));
@@ -149,5 +185,9 @@ export const useRoleStore = () => {
       const result = await dispatch(deleteRole(id));
       return result.meta.requestStatus === "fulfilled";
     },
+    clearError: () => dispatch(clearError()),
+    clearCreateError: () => dispatch(clearCreateError()),
+    clearUpdateError: () => dispatch(clearUpdateError()),
+    clearDeleteError: () => dispatch(clearDeleteError()),
   };
 };
