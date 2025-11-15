@@ -10,16 +10,19 @@ export interface Role {
   name: string;
   displayName: string;
   description: string;
+  isActive: boolean;
   isDefault: boolean;
   permissions: RolePermissions;
   createdAt?: string;
   updatedAt?: string;
+  deletedAt?: string | null;
 }
 
 export interface CreateRoleDto {
   name: string;
   displayName?: string;
   description?: string;
+  isActive?: boolean;
   isDefault?: boolean;
   permissions?: RolePermissions;
 }
@@ -28,8 +31,8 @@ export interface UpdateRoleDto {
   name?: string;
   displayName?: string;
   description?: string;
+  isActive?: boolean;
   isDefault?: boolean;
-
   permissions?: RolePermissions;
 }
 
