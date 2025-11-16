@@ -1,0 +1,9 @@
+export { MovieTable } from "./MovieTable";
+export { MovieTableHeader } from "./MovieTableHeader";
+export { MovieTableRow } from "./MovieTableRow";
+export { MoviePageHeader } from "./MoviePageHeader";
+export { MovieSearchFilter } from "./MovieSearchFilter";
+export { ModalCreateMovie } from "./ModalCreateMovie";
+export { ModalEditMovie } from "./ModalEditMovie";
+export { ModalViewMovie } from "./ModalViewMovie";
+export { ModalDeleteMovie } from "./ModalDeleteMovie";

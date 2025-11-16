@@ -6,6 +6,7 @@ import genreReducer from './slices/genreSlice';
 import directorReducer from './slices/directorSlice';
 import actorReducer from './slices/actorSlice';
 import countryReducer from './slices/countrySlice';
+import movieReducer from './slices/movieSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     directors: directorReducer,
     actors: actorReducer,
     countries: countryReducer,
+    movies: movieReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
