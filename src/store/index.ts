@@ -4,6 +4,7 @@ import roleReducer from './slices/roleSlice';
 import userReducer from './slices/userSlice';
 import genreReducer from './slices/genreSlice';
 import directorReducer from './slices/directorSlice';
+import actorReducer from './slices/actorSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     users: userReducer,
     genres: genreReducer,
     directors: directorReducer,
+    actors: actorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

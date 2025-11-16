@@ -5,6 +5,7 @@ import RolesPage from "@/pages/Roles";
 import UsersPage from "@/pages/Users";
 import GenresPage from "@/pages/Genres";
 import DirectorsPage from "@/pages/Directors";
+import ActorsPage from "@/pages/Actors";
 import { APP_ROUTES } from "@/constants";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 
@@ -61,6 +62,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <DirectorsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={APP_ROUTES.ACTORS}
+        element={
+          <ProtectedRoute>
+            <ActorsPage />
           </ProtectedRoute>
         }
       />
