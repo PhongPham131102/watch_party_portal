@@ -22,6 +22,7 @@ export const APP_ROUTES = {
   PROFILE: "/profile",
   USERS: "/users",
   MOVIES: "/movies",
+  EPISODES: "/tap-phim",
   ACTORS: "/actors",
   DIRECTORS: "/dao-dien",
   COUNTRIES: "/countries",

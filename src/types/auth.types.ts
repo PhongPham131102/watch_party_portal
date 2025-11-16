@@ -1,6 +1,7 @@
 export const RBACModule = {
   USERS: 'users',
   MOVIES: 'movies',
+  // EPISODES: 'episodes', // Tạm thời dùng chung với MOVIES
   ACTORS: 'actors',
   ROOMS: 'rooms',
   COMMENTS: 'comments',

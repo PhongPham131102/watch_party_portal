@@ -67,6 +67,13 @@ const menuItemsConfig: MenuItem[] = [
     action: RBACAction.READ,
   },
   {
+    icon: Video,
+    label: "Quản lý tập phim",
+    path: APP_ROUTES.EPISODES,
+    module: RBACModule.MOVIES,
+    action: RBACAction.READ,
+  },
+  {
     icon: Tags,
     label: "Quản lý thể loại",
     path: APP_ROUTES.GENRES,
@@ -122,7 +129,7 @@ const useFilteredMenuItems = (): MenuItem[] => {
   // Lấy permissions trực tiếp và tạo ability mới mỗi lần permissions thay đổi
   const permissions = useAppSelector((state) => state.auth.permissions);
   const user = useAppSelector((state) => state.auth.user);
-  
+
   return React.useMemo(() => {
     // Nếu chưa có user hoặc permissions, chỉ hiển thị Dashboard
     if (!user || !permissions || Object.keys(permissions).length === 0) {
@@ -131,7 +138,7 @@ const useFilteredMenuItems = (): MenuItem[] => {
 
     // Tạo ability mới từ permissions hiện tại
     const ability = defineAbilityFor(permissions);
-    
+
     return menuItemsConfig.filter((item: MenuItem) => {
       // Dashboard is always visible
       if (item.path === APP_ROUTES.HOME) {

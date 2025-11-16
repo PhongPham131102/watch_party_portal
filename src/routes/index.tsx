@@ -8,6 +8,7 @@ import DirectorsPage from "@/pages/Directors";
 import ActorsPage from "@/pages/Actors";
 import CountriesPage from "@/pages/Countries";
 import MoviesPage from "@/pages/Movies";
+import EpisodesPage from "@/pages/Episodes";
 import { APP_ROUTES } from "@/constants";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 
@@ -91,6 +92,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <MoviesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={APP_ROUTES.EPISODES}
+        element={
+          <ProtectedRoute>
+            <EpisodesPage />
           </ProtectedRoute>
         }
       />
