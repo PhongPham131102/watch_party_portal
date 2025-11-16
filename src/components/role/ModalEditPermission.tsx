@@ -254,8 +254,8 @@ function ModalEditPermission({
           <div className="flex-1 h-[80vh] p-6 overflow-y-auto scrollbar-hide">
             <div className="flex flex-col gap-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-1">
+                <div className="flex flex-col gap-2 md:col-span-2">
+                  <div className="flex items-center w-full">
                     <Label className="text-sm font-semibold text-gray-900 dark:text-white">
                       Tên hiển thị
                     </Label>
