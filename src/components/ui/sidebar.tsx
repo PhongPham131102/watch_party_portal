@@ -81,6 +81,13 @@ const menuItemsConfig: MenuItem[] = [
     action: RBACAction.READ,
   },
   {
+    icon: Film,
+    label: "Quản lý đạo diễn",
+    path: APP_ROUTES.DIRECTORS,
+    module: RBACModule.ACTORS,
+    action: RBACAction.READ,
+  },
+  {
     icon: Video,
     label: "Quản lý phòng",
     path: APP_ROUTES.ROOMS,

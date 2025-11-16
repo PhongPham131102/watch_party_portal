@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import roleReducer from './slices/roleSlice';
 import userReducer from './slices/userSlice';
 import genreReducer from './slices/genreSlice';
+import directorReducer from './slices/directorSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     roles: roleReducer,
     users: userReducer,
     genres: genreReducer,
+    directors: directorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

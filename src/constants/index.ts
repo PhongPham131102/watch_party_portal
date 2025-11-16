@@ -23,7 +23,7 @@ export const APP_ROUTES = {
   USERS: "/users",
   MOVIES: "/movies",
   ACTORS: "/actors",
-  DIRECTORS: "/directors",
+  DIRECTORS: "/dao-dien",
   COUNTRIES: "/countries",
   ROOMS: "/rooms",
   COMMENTS: "/comments",
