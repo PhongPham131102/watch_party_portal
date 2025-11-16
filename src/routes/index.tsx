@@ -6,6 +6,7 @@ import UsersPage from "@/pages/Users";
 import GenresPage from "@/pages/Genres";
 import DirectorsPage from "@/pages/Directors";
 import ActorsPage from "@/pages/Actors";
+import CountriesPage from "@/pages/Countries";
 import { APP_ROUTES } from "@/constants";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 
@@ -71,6 +72,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <ActorsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={APP_ROUTES.COUNTRIES}
+        element={
+          <ProtectedRoute>
+            <CountriesPage />
           </ProtectedRoute>
         }
       />

@@ -88,6 +88,13 @@ const menuItemsConfig: MenuItem[] = [
     action: RBACAction.READ,
   },
   {
+    icon: Tags,
+    label: "Quản lý quốc gia",
+    path: APP_ROUTES.COUNTRIES,
+    module: RBACModule.MOVIES,
+    action: RBACAction.READ,
+  },
+  {
     icon: Video,
     label: "Quản lý phòng",
     path: APP_ROUTES.ROOMS,
