@@ -65,7 +65,16 @@ export const directorService = {
     if (data.biography !== undefined) formData.append("biography", data.biography);
     if (data.dateOfBirth) formData.append("dateOfBirth", data.dateOfBirth);
     if (data.profileImageUrl) formData.append("profileImageUrl", data.profileImageUrl);
-    if (data.image) formData.append("image", data.image);
+    
+    // Trường hợp 1: Gửi ảnh mới
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+    // Trường hợp 2: Xóa ảnh
+    else if (data.removeImage) {
+      formData.append("removeImage", "true");
+    }
+    // Trường hợp 3: Giữ nguyên - không gửi gì
 
     const response = await apiClient.patch<ApiResponse<Director>>(
       `${API_BASE_URL}/directors/${id}`,

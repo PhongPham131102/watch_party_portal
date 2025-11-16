@@ -48,6 +48,8 @@ export function ModalEditDirector({
     useDirectorStore();
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+  const [hasOriginalImage, setHasOriginalImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<UpdateDirectorFormValues>({
@@ -76,7 +78,10 @@ export function ModalEditDirector({
         biography: currentDirector.biography || "",
         dateOfBirth: currentDirector.dateOfBirth || "",
       });
+      const hasImage = !!currentDirector.profileImageUrl;
+      setHasOriginalImage(hasImage);
       setPreview(currentDirector.profileImageUrl || null);
+      setIsImageRemoved(false);
     }
   }, [currentDirector, form]);
 
@@ -96,6 +101,7 @@ export function ModalEditDirector({
       };
       reader.readAsDataURL(file);
       form.setValue('image', file);
+      setIsImageRemoved(false);
     }
   };
 
@@ -121,6 +127,9 @@ export function ModalEditDirector({
   const handleRemoveImage = () => {
     setPreview(null);
     form.setValue('image', undefined);
+    if (hasOriginalImage) {
+      setIsImageRemoved(true);
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -137,8 +146,17 @@ export function ModalEditDirector({
         name: data.name,
         biography: data.biography || undefined,
         dateOfBirth: data.dateOfBirth || undefined,
-        image: data.image || undefined,
       };
+
+      // Trường hợp 1: Gửi ảnh mới
+      if (data.image) {
+        updateData.image = data.image;
+      }
+      // Trường hợp 2: Xóa ảnh (có ảnh cũ và user đã xóa, không có ảnh mới)
+      else if (isImageRemoved && hasOriginalImage) {
+        updateData.removeImage = true;
+      }
+      // Trường hợp 3: Giữ nguyên ảnh cũ - không cần làm gì
 
       const success = await updateDirector(directorId, updateData);
 

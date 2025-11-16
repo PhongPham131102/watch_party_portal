@@ -24,6 +24,7 @@ export interface UpdateDirectorDto {
   dateOfBirth?: string;
   profileImageUrl?: string;
   image?: File;
+  removeImage?: boolean;
 }
 
 export interface FetchDirectorsParams {
