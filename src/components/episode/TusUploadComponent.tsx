@@ -7,9 +7,19 @@ import { Upload, X, CheckCircle, AlertCircle, Pause, Play } from "lucide-react";
 import { showToast } from "@/lib/toast";
 import { episodeService } from "@/services/episode.service";
 import type { UploadEpisodeDto } from "@/types/episode.types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  startUpload as startUploadAction,
+  updateProgress as updateProgressAction,
+  pauseUpload as pauseUploadAction,
+  resumeUpload as resumeUploadAction,
+  completeUpload as completeUploadAction,
+  errorUpload as errorUploadAction,
+} from "@/store/slices/uploadSlice";
 
 interface TusUploadComponentProps {
   episodeMetadata: Omit<UploadEpisodeDto, "filename" | "filetype">;
+  onUploadStart?: (uploadId: string) => void;
   onUploadComplete?: (episodeId: string, uploadId: string) => void;
   onUploadError?: (error: string) => void;
   onCancel?: () => void;
@@ -33,10 +43,17 @@ const encodeMetadata = (
 
 export function TusUploadComponent({
   episodeMetadata,
+  onUploadStart,
   onUploadComplete,
   onUploadError,
   onCancel,
 }: TusUploadComponentProps) {
+  const dispatch = useAppDispatch();
+  const movies = useAppSelector((state) => state.movies.movies);
+  
+  // Get movie title from store
+  const movie = movies.find((m) => m.id === episodeMetadata.movieId);
+  const movieTitle = movie?.title;
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "uploading" | "paused" | "completed" | "error"
@@ -132,6 +149,17 @@ export function TusUploadComponent({
         setUploadStatus("error");
         setErrorMessage(error.message);
         showToast.error("Lỗi upload", error.message);
+        
+        // Dispatch to Redux
+        // Get uploadId from state or from upload.url
+        const currentUploadId = uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
+        if (currentUploadId) {
+          if (!uploadId) {
+            setUploadId(currentUploadId);
+          }
+          dispatch(errorUploadAction({ uploadId: currentUploadId, errorMessage: error.message }));
+        }
+        
         onUploadError?.(error.message);
       },
       onProgress: (bytesUploaded, bytesTotal) => {
@@ -140,10 +168,14 @@ export function TusUploadComponent({
 
         // Calculate upload speed (bytes per second)
         const elapsedSeconds = (Date.now() - startTime) / 1000;
+        let speed = "";
+        let eta = "";
+        
         if (elapsedSeconds > 0) {
           const speedBps = bytesUploaded / elapsedSeconds; // bytes/second
           const speedMBps = (speedBps / 1024 / 1024).toFixed(2); // MB/s
-          setUploadSpeed(`${speedMBps} MB/s`);
+          speed = `${speedMBps} MB/s`;
+          setUploadSpeed(speed);
 
           // Calculate ETA
           const remainingBytes = bytesTotal - bytesUploaded;
@@ -152,10 +184,22 @@ export function TusUploadComponent({
           const etaSecondsRemainder = etaSeconds % 60;
 
           if (etaMinutes > 0) {
-            setEta(`${etaMinutes} phút ${etaSecondsRemainder} giây`);
+            eta = `${etaMinutes} phút ${etaSecondsRemainder} giây`;
           } else {
-            setEta(`${etaSecondsRemainder} giây`);
+            eta = `${etaSecondsRemainder} giây`;
           }
+          setEta(eta);
+        }
+
+        // Dispatch to Redux
+        // Get uploadId from state or from upload.url
+        const currentUploadId = uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
+        if (currentUploadId) {
+          // Update state if not set yet
+          if (!uploadId) {
+            setUploadId(currentUploadId);
+          }
+          dispatch(updateProgressAction({ uploadId: currentUploadId, progress: percentage, speed, eta }));
         }
       },
       onSuccess: () => {
@@ -175,6 +219,9 @@ export function TusUploadComponent({
           if (uploadIdFromUrl) {
             console.log("✅ Got upload ID from URL:", uploadIdFromUrl);
             setUploadId(uploadIdFromUrl);
+            
+            // Dispatch to Redux
+            dispatch(completeUploadAction({ uploadId: uploadIdFromUrl }));
             
             // Note: Backend xử lý video ở background
             // episodeId sẽ được tạo sau khi backend process xong
@@ -200,6 +247,28 @@ export function TusUploadComponent({
               uploadIdFromHeader
             );
             setUploadId(uploadIdFromHeader);
+            
+            // Dispatch to Redux - Start upload tracking
+            dispatch(
+              startUploadAction({
+                uploadId: uploadIdFromHeader,
+                file: {
+                  name: file.name,
+                  size: file.size,
+                },
+                metadata: {
+                  movieId: episodeMetadata.movieId,
+                  movieTitle: movieTitle,
+                  episodeNumber: episodeMetadata.episodeNumber,
+                  title: episodeMetadata.title,
+                  description: episodeMetadata.description,
+                },
+                startTime: startTime,
+              })
+            );
+            
+            // Call onUploadStart callback (to close modal, etc.)
+            onUploadStart?.(uploadIdFromHeader);
           }
         }
       },
@@ -224,20 +293,26 @@ export function TusUploadComponent({
   };
 
   const pauseUpload = () => {
-    if (uploadRef.current && uploadStatus === "uploading") {
+    if (uploadRef.current && uploadStatus === "uploading" && uploadId) {
       uploadRef.current.abort();
       setUploadStatus("paused");
       showToast.info("Tạm dừng", "Đã tạm dừng upload");
+      
+      // Dispatch to Redux
+      dispatch(pauseUploadAction(uploadId));
     }
   };
 
   const resumeUpload = () => {
-    if (uploadRef.current && uploadStatus === "paused") {
+    if (uploadRef.current && uploadStatus === "paused" && uploadId) {
       // Reset start time for accurate speed calculation after resume
       uploadStartTimeRef.current = Date.now();
       uploadRef.current.start();
       setUploadStatus("uploading");
       showToast.info("Tiếp tục", "Đang tiếp tục upload...");
+      
+      // Dispatch to Redux
+      dispatch(resumeUploadAction(uploadId));
     }
   };
 

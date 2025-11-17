@@ -13,6 +13,7 @@ import {
   EpisodePageHeader,
   EpisodeSearchFilter,
   EpisodeTable,
+  UploadProgressList,
 } from "@/components/episode";
 import type { Episode } from "@/types/episode.types";
 import type { EpisodeSortKey } from "@/components/episode/EpisodeTableHeader";
@@ -256,6 +257,9 @@ export default function EpisodesPage() {
           episode={selectedEpisode}
           onComplete={handleRefresh}
         />
+
+        {/* Upload Progress List - Hiển thị tất cả uploads đang diễn ra */}
+        <UploadProgressList />
       </TooltipProvider>
     </div>
   );

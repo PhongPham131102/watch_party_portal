@@ -48,7 +48,6 @@ export default function ModalUploadEpisode({
       episodeNumber: 1,
       title: "",
       description: "",
-      durationMinutes: undefined,
       publishedAt: undefined,
     },
   });
@@ -60,7 +59,6 @@ export default function ModalUploadEpisode({
         episodeNumber: 1,
         title: "",
         description: "",
-        durationMinutes: undefined,
         publishedAt: undefined,
       });
       
@@ -72,6 +70,13 @@ export default function ModalUploadEpisode({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, preselectedMovieId]);
 
+  const handleUploadStart = (uploadId: string) => {
+    console.log('Upload started. Upload ID:', uploadId);
+    // Đóng modal ngay khi upload bắt đầu
+    // Progress sẽ được hiển thị ở UploadProgressList component
+    onClose();
+  };
+
   const handleUploadComplete = (_episodeId: string, uploadId: string) => {
     console.log('Upload completed. Upload ID:', uploadId);
     // Note: episodeId chưa có ngay (backend xử lý video ở background)
@@ -81,7 +86,6 @@ export default function ModalUploadEpisode({
       "Video đang được xử lý. Vui lòng refresh trang sau ít phút để xem episode mới."
     );
     onComplete();
-    onClose();
   };
 
   const handleUploadError = (error: string) => {
@@ -191,46 +195,22 @@ export default function ModalUploadEpisode({
               )}
             />
 
-            {/* Duration */}
-            <FormField
-              control={form.control}
-              name="durationMinutes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Thời lượng (phút)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Nhập thời lượng"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
-                      value={field.value || ""}
-                      min="1"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {/* TUS Upload Component */}
-            {form.formState.isValid && form.watch('movieId') && form.watch('title') && (
-              <div className="border-t pt-4">
-                <h3 className="text-sm font-medium mb-3">Upload video</h3>
-                <TusUploadComponent
-                  episodeMetadata={{
-                    movieId: form.watch('movieId'),
-                    episodeNumber: form.watch('episodeNumber'),
-                    title: form.watch('title'),
-                    description: form.watch('description'),
-                    durationMinutes: form.watch('durationMinutes'),
-                  }}
-                  onUploadComplete={handleUploadComplete}
-                  onUploadError={handleUploadError}
-                  onCancel={handleCancel}
-                />
-              </div>
-            )}
+            <div className="border-t pt-4">
+              <h3 className="text-sm font-medium mb-3">Upload video</h3>
+              <TusUploadComponent
+                episodeMetadata={{
+                  movieId: form.watch('movieId') || '',
+                  episodeNumber: form.watch('episodeNumber') || 1,
+                  title: form.watch('title') || '',
+                  description: form.watch('description') || '',
+                }}
+                onUploadStart={handleUploadStart}
+                onUploadComplete={handleUploadComplete}
+                onUploadError={handleUploadError}
+                onCancel={handleCancel}
+              />
+            </div>
           </form>
         </Form>
       </DialogContent>
