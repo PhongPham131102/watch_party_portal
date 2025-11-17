@@ -33,9 +33,9 @@ import { findTusUploadByUrl, removeTusStoredUpload } from "@/lib/tusStorage";
  * Helper function to encode metadata to Base64
  * TUS protocol requires metadata to be base64 encoded
  */
-const encodeMetadata = (
+function encodeMetadata(
   metadata: Record<string, string>
-): Record<string, string> => {
+): Record<string, string> {
   const encoded: Record<string, string> = {};
   for (const [key, value] of Object.entries(metadata)) {
     // Convert string to base64
@@ -43,7 +43,7 @@ const encodeMetadata = (
     encoded[key] = btoa(unescape(encodeURIComponent(value)));
   }
   return encoded;
-};
+}
 
 export function UploadProgressList() {
   const dispatch = useAppDispatch();
@@ -256,7 +256,8 @@ function UploadProgressItem({ upload, onRemove }: UploadProgressItemProps) {
 
     // TUS client sẽ tự động tìm previous upload từ localStorage dựa trên file fingerprint
     // Nếu tìm thấy, nó sẽ tự động resume từ offset đã lưu trên server
-    const uploadInstance = new tus.Upload(file, {
+    let uploadInstance: tus.Upload;
+    uploadInstance = new tus.Upload(file, {
       endpoint: baseEndpoint, // Use base endpoint
       retryDelays: [0, 1000, 3000, 5000],
       chunkSize: 5 * 1024 * 1024,
@@ -279,6 +280,18 @@ function UploadProgressItem({ upload, onRemove }: UploadProgressItemProps) {
 
             // Store old uploadId for cleanup
             const oldUploadId = currentUploadIdRef.current;
+
+            // Xóa TUS storage của old upload để tránh duplicate
+            if (upload.tusUploadUrl) {
+              const tusStored = findTusUploadByUrl(upload.tusUploadUrl);
+              if (tusStored) {
+                console.log(
+                  "🗑️ Xóa TUS storage của old upload:",
+                  tusStored.key
+                );
+                removeTusStoredUpload(tusStored.key);
+              }
+            }
 
             // Update current uploadId reference
             currentUploadIdRef.current = newUploadId;
@@ -343,6 +356,19 @@ function UploadProgressItem({ upload, onRemove }: UploadProgressItemProps) {
         );
       },
       onSuccess: () => {
+        // Xóa TUS storage khi upload completed
+        const uploadUrl = uploadInstance.url;
+        if (uploadUrl) {
+          const tusStored = findTusUploadByUrl(uploadUrl);
+          if (tusStored) {
+            console.log(
+              "🗑️ Xóa TUS storage khi resume completed:",
+              tusStored.key
+            );
+            removeTusStoredUpload(tusStored.key);
+          }
+        }
+
         dispatch(
           completeUploadAction({ uploadId: currentUploadIdRef.current })
         );
