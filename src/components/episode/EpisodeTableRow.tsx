@@ -1,6 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { RBACModule } from "@/types";
 import { usePermission } from "@/hooks";
 import type { Episode } from "@/types/episode.types";
@@ -13,11 +18,16 @@ interface EpisodeTableRowProps {
   onDelete: (item: Episode) => void;
 }
 
-export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTableRowProps) {
+export function EpisodeTableRow({
+  episode,
+  onView,
+  onEdit,
+  onDelete,
+}: EpisodeTableRowProps) {
   const { canRead, canUpdate, canDelete } = usePermission();
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return '-';
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -28,7 +38,7 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
   };
 
   const formatDuration = (minutes?: number) => {
-    if (!minutes) return '-';
+    if (!minutes) return "-";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
@@ -37,28 +47,28 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
   const getStatusBadge = (status: UploadVideoStatus) => {
     const statusConfig = {
       [UploadVideoStatus.PENDING]: {
-        bg: 'bg-gray-100 dark:bg-gray-800',
-        text: 'text-gray-700 dark:text-gray-300',
-        ring: 'ring-gray-500/20',
-        label: 'Chờ xử lý',
+        bg: "bg-gray-100 dark:bg-gray-800",
+        text: "text-gray-700 dark:text-gray-300",
+        ring: "ring-gray-500/20",
+        label: "Chờ xử lý",
       },
       [UploadVideoStatus.PROCESSING]: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-300',
-        ring: 'ring-blue-500/20',
-        label: 'Đang xử lý',
+        bg: "bg-blue-100 dark:bg-blue-900/30",
+        text: "text-blue-700 dark:text-blue-300",
+        ring: "ring-blue-500/20",
+        label: "Đang xử lý",
       },
       [UploadVideoStatus.SUCCESS]: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-300',
-        ring: 'ring-green-500/20',
-        label: 'Thành công',
+        bg: "bg-green-100 dark:bg-green-900/30",
+        text: "text-green-700 dark:text-green-300",
+        ring: "ring-green-500/20",
+        label: "Thành công",
       },
       [UploadVideoStatus.FAILED]: {
-        bg: 'bg-red-100 dark:bg-red-900/30',
-        text: 'text-red-700 dark:text-red-300',
-        ring: 'ring-red-500/20',
-        label: 'Thất bại',
+        bg: "bg-red-100 dark:bg-red-900/30",
+        text: "text-red-700 dark:text-red-300",
+        ring: "ring-red-500/20",
+        label: "Thất bại",
       },
     };
 
@@ -75,12 +85,12 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
     <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600 text-white font-bold">
             {episode.episodeNumber}
           </div>
         </div>
       </td>
-      
+
       <td className="px-6 py-4">
         <div>
           <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -93,7 +103,7 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
           )}
         </div>
       </td>
-      
+
       <td className="px-6 py-4">
         {episode.movie ? (
           <div className="text-sm text-gray-900 dark:text-white">
@@ -103,11 +113,11 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
           <span className="text-xs text-gray-400">-</span>
         )}
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
         {formatDuration(episode.durationMinutes)}
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap text-center">
         <div className="flex flex-col gap-1 items-center">
           <div className="flex items-center gap-1">
@@ -120,15 +130,15 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
           </div>
         </div>
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
         {formatDate(episode.publishedAt)}
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
         {formatDate(episode.createdAt)}
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex justify-center gap-2">
           {canRead(RBACModule.MOVIES) && (
@@ -142,10 +152,12 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
                   <Eye className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent><p>Xem chi tiết</p></TooltipContent>
+              <TooltipContent>
+                <p>Xem chi tiết</p>
+              </TooltipContent>
             </Tooltip>
           )}
-          
+
           {canUpdate(RBACModule.MOVIES) && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -157,10 +169,12 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
                   <Pencil className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent><p>Chỉnh sửa</p></TooltipContent>
+              <TooltipContent>
+                <p>Chỉnh sửa</p>
+              </TooltipContent>
             </Tooltip>
           )}
-          
+
           {canDelete(RBACModule.MOVIES) && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -172,7 +186,9 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent><p>Xóa tập phim</p></TooltipContent>
+              <TooltipContent>
+                <p>Xóa tập phim</p>
+              </TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -180,4 +196,3 @@ export function EpisodeTableRow({ episode, onView, onEdit, onDelete }: EpisodeTa
     </tr>
   );
 }
-

@@ -10,9 +10,6 @@ export { usePermission } from "./usePermission";
 export { useTableFiltersWithURL } from "./useTableFiltersWithURL";
 export { useURLParams } from "./useURLParams";
 
-// Upload progress hook (WebSocket)
-export { useUploadProgress } from "./useUploadProgress";
-
 // Types
 export type { TableFiltersWithURLConfig, UseTableFiltersWithURLOptions } from "./useTableFiltersWithURL";
 export type { URLParamsConfig } from "./useURLParams";

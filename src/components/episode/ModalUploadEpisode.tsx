@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { uploadEpisodeSchema } from "@/lib/validations/episode";
 import type { UploadEpisodeFormValues } from "@/lib/validations/episode";
+import { showToast } from "@/lib/toast";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +40,6 @@ export default function ModalUploadEpisode({
   preselectedMovieId,
 }: ModalUploadEpisodeProps) {
   const { movies, loadMovies } = useMovieStore();
-  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<Omit<UploadEpisodeFormValues, 'filename' | 'filetype'>>({
     resolver: zodResolver(uploadEpisodeSchema.omit({ filename: true, filetype: true })),
@@ -63,29 +63,32 @@ export default function ModalUploadEpisode({
         durationMinutes: undefined,
         publishedAt: undefined,
       });
-      setIsUploading(false);
       
       // Load movies for dropdown
       if (movies.length === 0) {
         loadMovies({ page: 1, limit: 100, sortBy: 'title', sortOrder: 'ASC' });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, preselectedMovieId]);
 
-  const handleUploadComplete = (episodeId: string, uploadId: string) => {
-    console.log('Episode created:', episodeId, 'Upload ID:', uploadId);
-    setIsUploading(false);
+  const handleUploadComplete = (_episodeId: string, uploadId: string) => {
+    console.log('Upload completed. Upload ID:', uploadId);
+    // Note: episodeId chưa có ngay (backend xử lý video ở background)
+    // User có thể refresh trang sau vài phút để xem episode mới
+    showToast.success(
+      "Upload hoàn tất", 
+      "Video đang được xử lý. Vui lòng refresh trang sau ít phút để xem episode mới."
+    );
     onComplete();
     onClose();
   };
 
   const handleUploadError = (error: string) => {
     console.error('Upload error:', error);
-    setIsUploading(false);
   };
 
   const handleCancel = () => {
-    setIsUploading(false);
     onClose();
   };
 

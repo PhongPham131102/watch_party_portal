@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { EpisodeTableHeader, type EpisodeSortKey } from "./EpisodeTableHeader";
 import { EpisodeTableRow } from "./EpisodeTableRow";
 import { EmptyState } from "@/components/common";
@@ -6,7 +7,7 @@ import type { Episode } from "@/types/episode.types";
 interface EpisodeTableProps {
   episodes: Episode[];
   sortBy: EpisodeSortKey;
-  sortOrder: 'ASC' | 'DESC';
+  sortOrder: "ASC" | "DESC";
   onSort: (column: EpisodeSortKey) => void;
   onView: (item: Episode) => void;
   onEdit: (item: Episode) => void;
@@ -29,10 +30,18 @@ export function EpisodeTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[1200px]">
-        <EpisodeTableHeader sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} />
+        <EpisodeTableHeader
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={onSort}
+        />
         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {episodes.length === 0 ? (
-            <EmptyState message={emptyMessage} description={emptyDescription} colSpan={8} />
+            <EmptyState
+              message={emptyMessage}
+              description={emptyDescription}
+              colSpan={8}
+            />
           ) : (
             episodes.map((item) => (
               <EpisodeTableRow
@@ -49,4 +58,3 @@ export function EpisodeTable({
     </div>
   );
 }
-

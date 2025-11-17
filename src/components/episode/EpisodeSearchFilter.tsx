@@ -1,5 +1,12 @@
+/* eslint-disable no-unused-vars */
 import { SearchFilter } from "@/components/common";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { UploadVideoStatus } from "@/types/episode.types";
 
@@ -25,7 +32,7 @@ export function EpisodeSearchFilter({
   search,
   onSearchChange,
   movieId,
-  onMovieIdChange,
+
   uploadStatusS3,
   uploadStatusMinio,
   onUploadStatusS3Change,
@@ -64,23 +71,37 @@ export function EpisodeSearchFilter({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả (S3)</SelectItem>
-              <SelectItem value={UploadVideoStatus.PENDING}>Chờ xử lý</SelectItem>
-              <SelectItem value={UploadVideoStatus.PROCESSING}>Đang xử lý</SelectItem>
-              <SelectItem value={UploadVideoStatus.SUCCESS}>Thành công</SelectItem>
+              <SelectItem value={UploadVideoStatus.PENDING}>
+                Chờ xử lý
+              </SelectItem>
+              <SelectItem value={UploadVideoStatus.PROCESSING}>
+                Đang xử lý
+              </SelectItem>
+              <SelectItem value={UploadVideoStatus.SUCCESS}>
+                Thành công
+              </SelectItem>
               <SelectItem value={UploadVideoStatus.FAILED}>Thất bại</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Upload Status Minio Filter */}
-          <Select value={uploadStatusMinio} onValueChange={onUploadStatusMinioChange}>
+          <Select
+            value={uploadStatusMinio}
+            onValueChange={onUploadStatusMinioChange}>
             <SelectTrigger className="w-[180px] h-9">
               <SelectValue placeholder="Trạng thái Minio" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả (Minio)</SelectItem>
-              <SelectItem value={UploadVideoStatus.PENDING}>Chờ xử lý</SelectItem>
-              <SelectItem value={UploadVideoStatus.PROCESSING}>Đang xử lý</SelectItem>
-              <SelectItem value={UploadVideoStatus.SUCCESS}>Thành công</SelectItem>
+              <SelectItem value={UploadVideoStatus.PENDING}>
+                Chờ xử lý
+              </SelectItem>
+              <SelectItem value={UploadVideoStatus.PROCESSING}>
+                Đang xử lý
+              </SelectItem>
+              <SelectItem value={UploadVideoStatus.SUCCESS}>
+                Thành công
+              </SelectItem>
               <SelectItem value={UploadVideoStatus.FAILED}>Thất bại</SelectItem>
             </SelectContent>
           </Select>
@@ -91,7 +112,9 @@ export function EpisodeSearchFilter({
               type="number"
               placeholder="Từ tập"
               value={episodeNumberFrom === "all" ? "" : episodeNumberFrom}
-              onChange={(e) => onEpisodeNumberFromChange(e.target.value || "all")}
+              onChange={(e) =>
+                onEpisodeNumberFromChange(e.target.value || "all")
+              }
               className="w-[100px] h-9"
               min="1"
             />
@@ -110,4 +133,3 @@ export function EpisodeSearchFilter({
     />
   );
 }
-

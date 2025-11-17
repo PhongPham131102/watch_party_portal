@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { TableHeader, type TableColumn, type SortConfig } from "@/components/common";
 
 export type EpisodeSortKey = 'episodeNumber' | 'title' | 'createdAt' | 'publishedAt';

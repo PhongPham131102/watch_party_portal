@@ -3,6 +3,10 @@ export * from "./errorCodes";
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8888/api/v1";
 
+// WebSocket URL - không dùng /api/v1 prefix
+export const SOCKET_BASE_URL =
+  import.meta.env.VITE_SOCKET_BASE_URL || "http://localhost:8888";
+
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: "/auth/login",

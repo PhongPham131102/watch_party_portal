@@ -3,6 +3,7 @@ export { default as ProtectedRoute } from "./ProtectedRoute";
 export { default as PublicRoute } from "./PublicRoute";
 export { PermissionGuard } from "./PermissionGuard";
 export { default as RoleBasedRoute } from "./RoleBasedRoute";
+export { default as SocketIOGuard } from "./SocketIOGuard";
 export { PageHeader } from "./PageHeader";
 export { SearchFilter } from "./SearchFilter";
 export { DataTable } from "./DataTable";

@@ -4,7 +4,7 @@ import { AbilityContext } from "@/lib/Can";
 import { useAppSelector } from "@/store/hooks";
 import { Toaster } from "@/components/ui/sonner";
 import { AppRoutes } from "@/routes";
-import { AuthProvider } from "@/components/common";
+import { AuthProvider, SocketIOGuard } from "@/components/common";
 
 function App() {
   return (
@@ -21,8 +21,10 @@ function AppContent() {
 
   return (
     <AbilityContext.Provider value={ability}>
-      <AppRoutes />
-      <Toaster />
+      <SocketIOGuard>
+        <AppRoutes />
+        <Toaster />
+      </SocketIOGuard>
     </AbilityContext.Provider>
   );
 }

@@ -7,6 +7,9 @@ import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTable } from "@/components/common";
 import {
   ModalUploadEpisode,
+  ModalViewEpisode,
+  ModalEditEpisode,
+  ModalDeleteEpisode,
   EpisodePageHeader,
   EpisodeSearchFilter,
   EpisodeTable,
@@ -57,6 +60,9 @@ export default function EpisodesPage() {
   const debouncedEpisodeTo = useDebounce(episodeNumberTo, 500);
 
   const [isOpenUploadModal, setIsOpenUploadModal] = useState(false);
+  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   const { canRead, canCreate } = usePermission();
@@ -122,18 +128,18 @@ export default function EpisodesPage() {
   };
 
   const handleView = (episode: Episode) => {
-    console.log("View episode:", episode);
-    // TODO: Implement view modal
+    setSelectedEpisode(episode);
+    setIsOpenViewModal(true);
   };
 
   const handleEdit = (episode: Episode) => {
-    console.log("Edit episode:", episode);
-    // TODO: Implement edit modal
+    setSelectedEpisode(episode);
+    setIsOpenEditModal(true);
   };
 
   const handleDelete = (episode: Episode) => {
-    console.log("Delete episode:", episode);
-    // TODO: Implement delete modal
+    setSelectedEpisode(episode);
+    setIsOpenDeleteModal(true);
   };
 
   const handleClearAllFilters = () => {
@@ -221,6 +227,35 @@ export default function EpisodesPage() {
             onComplete={handleRefresh}
           />
         )}
+
+        <ModalViewEpisode
+          isOpen={isOpenViewModal}
+          onClose={() => {
+            setIsOpenViewModal(false);
+            setSelectedEpisode(null);
+          }}
+          episodeId={selectedEpisode?.id || null}
+        />
+
+        <ModalEditEpisode
+          isOpen={isOpenEditModal}
+          onClose={() => {
+            setIsOpenEditModal(false);
+            setSelectedEpisode(null);
+          }}
+          episodeId={selectedEpisode?.id || null}
+          onComplete={handleRefresh}
+        />
+
+        <ModalDeleteEpisode
+          isOpen={isOpenDeleteModal}
+          onClose={() => {
+            setIsOpenDeleteModal(false);
+            setSelectedEpisode(null);
+          }}
+          episode={selectedEpisode}
+          onComplete={handleRefresh}
+        />
       </TooltipProvider>
     </div>
   );

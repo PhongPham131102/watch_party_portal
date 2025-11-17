@@ -1,4 +1,4 @@
-import { Plus, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common";
 
@@ -25,7 +25,7 @@ export function EpisodePageHeader({
         canUploadEpisode && (
           <Button
             onClick={onUploadEpisode}
-            className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all duration-200">
+            className="gap-2 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-lg transition-all duration-200">
             <Upload className="h-4 w-4" />
             <span>Upload tập phim</span>
           </Button>
@@ -34,4 +34,3 @@ export function EpisodePageHeader({
     />
   );
 }
-
