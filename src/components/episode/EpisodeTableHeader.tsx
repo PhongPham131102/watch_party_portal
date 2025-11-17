@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { TableHeader, type TableColumn, type SortConfig } from "@/components/common";
 
-export type EpisodeSortKey = 'episodeNumber' | 'title' | 'createdAt' | 'publishedAt';
+export type EpisodeSortKey = "episodeNumber" | "title" | "createdAt";
 
 interface EpisodeTableHeaderProps {
   sortBy: EpisodeSortKey;
@@ -11,56 +11,61 @@ interface EpisodeTableHeaderProps {
 
 const columns: TableColumn<EpisodeSortKey>[] = [
   {
-    key: 'episodeNumber',
-    label: 'Số tập',
+    key: "title",
+    label: "Tập phim",
     sortable: true,
-    sortKey: 'episodeNumber',
-    align: 'left',
+    sortKey: "title",
+    align: "left",
   },
   {
-    key: 'title',
-    label: 'Tiêu đề',
+    key: "episodeNumber",
+    label: "Số tập",
     sortable: true,
-    sortKey: 'title',
-    align: 'left',
+    sortKey: "episodeNumber",
+    align: "left",
   },
   {
-    key: 'movie',
-    label: 'Phim',
+    key: "movie",
+    label: "Phim",
     sortable: false,
-    align: 'left',
+    align: "left",
   },
   {
-    key: 'duration',
-    label: 'Thời lượng',
+    key: "duration",
+    label: "Thời lượng",
     sortable: false,
-    align: 'left',
+    align: "left",
   },
   {
-    key: 'uploadStatus',
-    label: 'Trạng thái upload',
+    key: "statusS3",
+    label: "Trạng thái S3",
     sortable: false,
-    align: 'center',
+    align: "center",
   },
   {
-    key: 'publishedAt',
-    label: 'Ngày xuất bản',
+    key: "statusMinio",
+    label: "Trạng thái MinIO",
+    sortable: false,
+    align: "center",
+  },
+  {
+    key: "processing",
+    label: "Trạng thái xử lý",
+    sortable: false,
+    align: "center",
+  },
+  {
+    key: "createdAt",
+    label: "Ngày tạo",
     sortable: true,
-    sortKey: 'publishedAt',
-    align: 'left',
+    sortKey: "createdAt",
+    align: "left",
   },
   {
-    key: 'createdAt',
-    label: 'Ngày tạo',
-    sortable: true,
-    sortKey: 'createdAt',
-    align: 'left',
-  },
-  {
-    key: 'actions',
-    label: 'Thao tác',
+    key: "actions",
+    label: "Thao tác",
     sortable: false,
-    align: 'center',
+    align: "center",
   },
 ];
 

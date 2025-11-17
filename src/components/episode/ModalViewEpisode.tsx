@@ -7,8 +7,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { UploadVideoStatus } from "@/types/episode.types";
-import { Loader2, Film, Clock, Calendar, Video } from "lucide-react";
+import { UploadVideoStatus, VideoProcessingStatus } from "@/types/episode.types";
+import { Loader2, Film, Clock, Calendar, Video, Cog } from "lucide-react";
 
 interface ModalViewEpisodeProps {
   isOpen: boolean;
@@ -56,6 +56,40 @@ export default function ModalViewEpisode({
     };
     const config = statusConfig[status];
     return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
+  };
+
+  const getProcessingStatusBadge = (status: VideoProcessingStatus) => {
+    const statusConfig = {
+      [VideoProcessingStatus.PENDING]: { 
+        variant: "secondary" as const, 
+        label: "Chờ xử lý",
+        icon: null,
+      },
+      [VideoProcessingStatus.PROCESSING]: { 
+        variant: "default" as const, 
+        label: "Đang xử lý",
+        className: "bg-amber-500 hover:bg-amber-600",
+        icon: <Loader2 className="h-3 w-3 animate-spin mr-1" />,
+      },
+      [VideoProcessingStatus.SUCCESS]: { 
+        variant: "default" as const, 
+        label: "Hoàn tất", 
+        className: "bg-green-500 hover:bg-green-600",
+        icon: null,
+      },
+      [VideoProcessingStatus.FAILED]: { 
+        variant: "destructive" as const, 
+        label: "Thất bại",
+        icon: null,
+      },
+    };
+    const config = statusConfig[status];
+    return (
+      <Badge variant={config.variant} className={config.className}>
+        {config.icon}
+        {config.label}
+      </Badge>
+    );
   };
 
   return (
@@ -142,6 +176,32 @@ export default function ModalViewEpisode({
                 <p className="text-base text-gray-900 dark:text-white">
                   {formatDate(currentEpisode.publishedAt)}
                 </p>
+              </div>
+            </div>
+
+            {/* Processing Status */}
+            <div className="border-t pt-4">
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3 flex items-center gap-2">
+                <Cog className="h-4 w-4" />
+                Trạng thái xử lý video
+              </h3>
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Xử lý FFmpeg (HLS, Thumbnails)
+                  </span>
+                  {getProcessingStatusBadge(currentEpisode.processingStatus)}
+                </div>
+                {currentEpisode.processingStatus === VideoProcessingStatus.PROCESSING && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                    Video đang được xử lý. Vui lòng chờ hoàn tất trước khi thao tác.
+                  </p>
+                )}
+                {currentEpisode.processingStatus === VideoProcessingStatus.FAILED && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                    Xử lý video thất bại. Vui lòng liên hệ quản trị viên.
+                  </p>
+                )}
               </div>
             </div>
 

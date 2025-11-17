@@ -8,7 +8,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { UploadVideoStatus } from "@/types/episode.types";
+import { UploadVideoStatus, VideoProcessingStatus } from "@/types/episode.types";
 
 interface EpisodeSearchFilterProps {
   search: string;
@@ -17,8 +17,10 @@ interface EpisodeSearchFilterProps {
   onMovieIdChange: (value: string) => void;
   uploadStatusS3: string;
   uploadStatusMinio: string;
+  processingStatus: string;
   onUploadStatusS3Change: (value: string) => void;
   onUploadStatusMinioChange: (value: string) => void;
+  onProcessingStatusChange: (value: string) => void;
   episodeNumberFrom: string;
   episodeNumberTo: string;
   onEpisodeNumberFromChange: (value: string) => void;
@@ -32,11 +34,12 @@ export function EpisodeSearchFilter({
   search,
   onSearchChange,
   movieId,
-
   uploadStatusS3,
   uploadStatusMinio,
+  processingStatus,
   onUploadStatusS3Change,
   onUploadStatusMinioChange,
+  onProcessingStatusChange,
   episodeNumberFrom,
   episodeNumberTo,
   onEpisodeNumberFromChange,
@@ -50,6 +53,7 @@ export function EpisodeSearchFilter({
     (movieId && movieId !== "all") ||
     uploadStatusS3 !== "all" ||
     uploadStatusMinio !== "all" ||
+    processingStatus !== "all" ||
     episodeNumberFrom !== "all" ||
     episodeNumberTo !== "all";
 
@@ -103,6 +107,28 @@ export function EpisodeSearchFilter({
                 Thành công
               </SelectItem>
               <SelectItem value={UploadVideoStatus.FAILED}>Thất bại</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Processing Status Filter */}
+          <Select
+            value={processingStatus}
+            onValueChange={onProcessingStatusChange}>
+            <SelectTrigger className="w-[180px] h-9">
+              <SelectValue placeholder="Trạng thái xử lý" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả (Xử lý)</SelectItem>
+              <SelectItem value={VideoProcessingStatus.PENDING}>
+                Chờ xử lý
+              </SelectItem>
+              <SelectItem value={VideoProcessingStatus.PROCESSING}>
+                Đang xử lý
+              </SelectItem>
+              <SelectItem value={VideoProcessingStatus.SUCCESS}>
+                Hoàn tất
+              </SelectItem>
+              <SelectItem value={VideoProcessingStatus.FAILED}>Thất bại</SelectItem>
             </SelectContent>
           </Select>
 

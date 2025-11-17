@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -9,7 +9,7 @@ import {
 import { RBACModule } from "@/types";
 import { usePermission } from "@/hooks";
 import type { Episode } from "@/types/episode.types";
-import { UploadVideoStatus } from "@/types/episode.types";
+import { UploadVideoStatus, VideoProcessingStatus } from "@/types/episode.types";
 
 interface EpisodeTableRowProps {
   episode: Episode;
@@ -41,7 +41,13 @@ export function EpisodeTableRow({
     if (!minutes) return "-";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+
+    if (hours > 0) {
+      const minuteText = mins > 0 ? `${mins} phút` : "";
+      return `${hours} giờ ${minuteText}`.trim();
+    }
+
+    return `${mins} phút`;
   };
 
   const getStatusBadge = (status: UploadVideoStatus) => {
@@ -81,27 +87,84 @@ export function EpisodeTableRow({
     );
   };
 
+  const getProcessingStatusBadge = (status: VideoProcessingStatus) => {
+    const statusConfig = {
+      [VideoProcessingStatus.PENDING]: {
+        bg: "bg-gray-100 dark:bg-gray-800",
+        text: "text-gray-700 dark:text-gray-300",
+        ring: "ring-gray-500/20",
+        label: "Chờ xử lý",
+        icon: null,
+      },
+      [VideoProcessingStatus.PROCESSING]: {
+        bg: "bg-amber-100 dark:bg-amber-900/30",
+        text: "text-amber-700 dark:text-amber-300",
+        ring: "ring-amber-500/20",
+        label: "Đang xử lý",
+        icon: <Loader2 className="h-3 w-3 animate-spin mr-1" />,
+      },
+      [VideoProcessingStatus.SUCCESS]: {
+        bg: "bg-green-100 dark:bg-green-900/30",
+        text: "text-green-700 dark:text-green-300",
+        ring: "ring-green-500/20",
+        label: "Hoàn tất",
+        icon: null,
+      },
+      [VideoProcessingStatus.FAILED]: {
+        bg: "bg-red-100 dark:bg-red-900/30",
+        text: "text-red-700 dark:text-red-300",
+        ring: "ring-red-500/20",
+        label: "Thất bại",
+        icon: null,
+      },
+    };
+
+    const config = statusConfig[status];
+    return (
+      <span
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${config.bg} ${config.text} ${config.ring}`}>
+        {config.icon}
+        {config.label}
+      </span>
+    );
+  };
+
+  // Kiểm tra xem có đang processing không
+  const isProcessing = episode.processingStatus === VideoProcessingStatus.PROCESSING;
+
   return (
     <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600 text-white font-bold">
-            {episode.episodeNumber}
+      <td className="px-6 py-4">
+        <div className="flex items-start gap-3">
+          {episode.thumbnailUrl ? (
+            <img
+              src={episode.thumbnailUrl}
+              alt={episode.title}
+              loading="lazy"
+              className="h-16 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+            />
+          ) : (
+            <div className="h-16 w-24 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-600">
+              Không có ảnh
+            </div>
+          )}
+          <div>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              {episode.title}
+            </p>
+            {episode.description && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
+                {episode.description}
+              </p>
+            )}
           </div>
         </div>
       </td>
 
-      <td className="px-6 py-4">
-        <div>
-          <div className="text-sm font-medium text-gray-900 dark:text-white">
-            {episode.title}
-          </div>
-          {episode.description && (
-            <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
-              {episode.description}
-            </div>
-          )}
-        </div>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className="text-sm font-bold text-gray-900 dark:text-white">
+          Tập {episode.episodeNumber}
+        </span>
       </td>
 
       <td className="px-6 py-4">
@@ -119,20 +182,15 @@ export function EpisodeTableRow({
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-center">
-        <div className="flex flex-col gap-1 items-center">
-          <div className="flex items-center gap-1">
-            <span className="text-xs text-gray-500">S3:</span>
-            {getStatusBadge(episode.uploadStatusS3)}
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-xs text-gray-500">Minio:</span>
-            {getStatusBadge(episode.uploadStatusMinio)}
-          </div>
-        </div>
+        {getStatusBadge(episode.uploadStatusS3)}
       </td>
 
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-        {formatDate(episode.publishedAt)}
+      <td className="px-6 py-4 whitespace-nowrap text-center">
+        {getStatusBadge(episode.uploadStatusMinio)}
+      </td>
+
+      <td className="px-6 py-4 whitespace-nowrap text-center">
+        {getProcessingStatusBadge(episode.processingStatus)}
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -164,13 +222,14 @@ export function EpisodeTableRow({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onEdit(episode)}
-                  className="h-9 w-9 p-0 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-300 dark:hover:bg-amber-900/20 dark:hover:text-amber-400 cursor-pointer">
+                  onClick={() => !isProcessing && onEdit(episode)}
+                  disabled={isProcessing}
+                  className="h-9 w-9 p-0 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-300 dark:hover:bg-amber-900/20 dark:hover:text-amber-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                   <Pencil className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Chỉnh sửa</p>
+                <p>{isProcessing ? "Đang xử lý video, vui lòng chờ" : "Chỉnh sửa"}</p>
               </TooltipContent>
             </Tooltip>
           )}
@@ -181,13 +240,14 @@ export function EpisodeTableRow({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-300 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 cursor-pointer"
-                  onClick={() => onDelete(episode)}>
+                  disabled={isProcessing}
+                  className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-300 dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => !isProcessing && onDelete(episode)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Xóa tập phim</p>
+                <p>{isProcessing ? "Đang xử lý video, vui lòng chờ" : "Xóa tập phim"}</p>
               </TooltipContent>
             </Tooltip>
           )}

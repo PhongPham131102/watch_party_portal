@@ -53,9 +53,6 @@ export default function ModalEditEpisode({
       episodeNumber: 1,
       title: "",
       description: "",
-      durationMinutes: undefined,
-      thumbnailUrl: "",
-      publishedAt: undefined,
     },
   });
 
@@ -71,9 +68,6 @@ export default function ModalEditEpisode({
         episodeNumber: currentEpisode.episodeNumber,
         title: currentEpisode.title,
         description: currentEpisode.description || "",
-        durationMinutes: currentEpisode.durationMinutes,
-        thumbnailUrl: currentEpisode.thumbnailUrl || "",
-        publishedAt: currentEpisode.publishedAt,
       });
     }
   }, [currentEpisode]);
@@ -153,43 +147,6 @@ export default function ModalEditEpisode({
                       rows={4}
                       {...field}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Duration */}
-            <FormField
-              control={form.control}
-              name="durationMinutes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Thời lượng (phút)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Nhập thời lượng"
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)}
-                      value={field.value || ""}
-                      min="1"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Thumbnail URL */}
-            <FormField
-              control={form.control}
-              name="thumbnailUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL Thumbnail</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nhập URL thumbnail" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

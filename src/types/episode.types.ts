@@ -5,6 +5,13 @@ export enum UploadVideoStatus {
   FAILED = 'FAILED',
 }
 
+export enum VideoProcessingStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}
+
 export interface VideoQuality {
   quality: string;
   url: string;
@@ -31,6 +38,9 @@ export interface Episode {
   // Upload status
   uploadStatusS3: UploadVideoStatus;
   uploadStatusMinio: UploadVideoStatus;
+  
+  // Processing status (FFmpeg conversion)
+  processingStatus: VideoProcessingStatus;
   
   createdAt: string;
   updatedAt: string;
@@ -72,6 +82,7 @@ export interface FetchEpisodesParams {
   search?: string;
   uploadStatusS3?: UploadVideoStatus;
   uploadStatusMinio?: UploadVideoStatus;
+  processingStatus?: VideoProcessingStatus;
   episodeNumberFrom?: number;
   episodeNumberTo?: number;
   sortBy?: 'episodeNumber' | 'title' | 'createdAt' | 'publishedAt';

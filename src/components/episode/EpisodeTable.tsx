@@ -40,7 +40,7 @@ export function EpisodeTable({
             <EmptyState
               message={emptyMessage}
               description={emptyDescription}
-              colSpan={8}
+              colSpan={9}
             />
           ) : (
             episodes.map((item) => (
