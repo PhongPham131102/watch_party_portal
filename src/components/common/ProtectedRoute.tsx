@@ -2,6 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
 import { APP_ROUTES } from "@/constants";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import type React from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

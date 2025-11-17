@@ -8,6 +8,7 @@ import type {
 } from "@/types/episode.types";
 import { getErrorMessage } from "@/constants/errorCodes";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { useCallback } from "react";
 
 // Helper function
 function handleApiError(error: unknown): string {
@@ -196,6 +197,42 @@ export const useEpisodeStore = () => {
   const deleteError = useAppSelector((state) => state.episodes.deleteError);
   const dispatch = useAppDispatch();
 
+  const fetchEpisodesCallback = useCallback(
+    (params?: FetchEpisodesParams) => dispatch(fetchEpisodes(params || {})),
+    [dispatch]
+  );
+
+  const fetchEpisodeByIdCallback = useCallback(
+    (id: string) => dispatch(fetchEpisodeById(id)),
+    [dispatch]
+  );
+
+  const updateEpisodeCallback = useCallback(
+    async (id: string, data: UpdateEpisodeDto) => {
+      const result = await dispatch(updateEpisode({ id, data }));
+      return result.meta.requestStatus === "fulfilled";
+    },
+    [dispatch]
+  );
+
+  const deleteEpisodeCallback = useCallback(
+    async (id: string) => {
+      const result = await dispatch(deleteEpisode(id));
+      return result.meta.requestStatus === "fulfilled";
+    },
+    [dispatch]
+  );
+
+  const clearCurrentEpisodeCallback = useCallback(
+    () => dispatch(clearCurrentEpisode()),
+    [dispatch]
+  );
+
+  const clearErrorsCallback = useCallback(
+    () => dispatch(clearErrors()),
+    [dispatch]
+  );
+
   return {
     episodes,
     currentEpisode,
@@ -210,18 +247,12 @@ export const useEpisodeStore = () => {
     error,
     updateError,
     deleteError,
-    fetchEpisodes: (params?: FetchEpisodesParams) => dispatch(fetchEpisodes(params || {})),
-    fetchEpisodeById: (id: string) => dispatch(fetchEpisodeById(id)),
-    updateEpisode: async (id: string, data: UpdateEpisodeDto) => {
-      const result = await dispatch(updateEpisode({ id, data }));
-      return result.meta.requestStatus === "fulfilled";
-    },
-    deleteEpisode: async (id: string) => {
-      const result = await dispatch(deleteEpisode(id));
-      return result.meta.requestStatus === "fulfilled";
-    },
-    clearCurrentEpisode: () => dispatch(clearCurrentEpisode()),
-    clearErrors: () => dispatch(clearErrors()),
+    fetchEpisodes: fetchEpisodesCallback,
+    fetchEpisodeById: fetchEpisodeByIdCallback,
+    updateEpisode: updateEpisodeCallback,
+    deleteEpisode: deleteEpisodeCallback,
+    clearCurrentEpisode: clearCurrentEpisodeCallback,
+    clearErrors: clearErrorsCallback,
   };
 };
 

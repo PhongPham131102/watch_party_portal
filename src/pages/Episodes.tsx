@@ -1,4 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useEpisodeStore } from "@/store/slices/episodeSlice";
 import { usePermission, useTableFiltersWithURL } from "@/hooks";
 import { RBACModule } from "@/types";
@@ -7,7 +10,6 @@ import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTable } from "@/components/common";
 import {
   ModalUploadEpisode,
-  ModalViewEpisode,
   ModalEditEpisode,
   ModalDeleteEpisode,
   EpisodePageHeader,
@@ -17,6 +19,7 @@ import {
 } from "@/components/episode";
 import type { Episode } from "@/types/episode.types";
 import type { EpisodeSortKey } from "@/components/episode/EpisodeTableHeader";
+import { APP_ROUTES } from "@/constants";
 
 export default function EpisodesPage() {
   const {
@@ -26,7 +29,6 @@ export default function EpisodesPage() {
     limit: currentLimit,
     totalPages,
     isLoading,
-    error,
     fetchEpisodes,
   } = useEpisodeStore();
 
@@ -55,12 +57,12 @@ export default function EpisodesPage() {
   const [processingStatus, setProcessingStatus] = useState<string>("all");
 
   const [isOpenUploadModal, setIsOpenUploadModal] = useState(false);
-  const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   const { canRead, canCreate } = usePermission();
+  const navigate = useNavigate();
 
   const canAccessPage = canRead(RBACModule.MOVIES);
 
@@ -70,9 +72,12 @@ export default function EpisodesPage() {
       fetchEpisodes({
         ...filters,
         movieId: movieId === "all" ? undefined : movieId,
-        uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
-        uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-        processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
+        uploadStatusS3:
+          uploadStatusS3 === "all" ? undefined : (uploadStatusS3 as any),
+        uploadStatusMinio:
+          uploadStatusMinio === "all" ? undefined : (uploadStatusMinio as any),
+        processingStatus:
+          processingStatus === "all" ? undefined : (processingStatus as any),
       });
     }
   }, [
@@ -93,9 +98,12 @@ export default function EpisodesPage() {
     fetchEpisodes({
       ...filters,
       movieId: movieId === "all" ? undefined : movieId,
-      uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
-      uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
+      uploadStatusS3:
+        uploadStatusS3 === "all" ? undefined : (uploadStatusS3 as any),
+      uploadStatusMinio:
+        uploadStatusMinio === "all" ? undefined : (uploadStatusMinio as any),
+      processingStatus:
+        processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
@@ -104,9 +112,12 @@ export default function EpisodesPage() {
     fetchEpisodes({
       ...filters,
       movieId: movieId === "all" ? undefined : movieId,
-      uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
-      uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
+      uploadStatusS3:
+        uploadStatusS3 === "all" ? undefined : (uploadStatusS3 as any),
+      uploadStatusMinio:
+        uploadStatusMinio === "all" ? undefined : (uploadStatusMinio as any),
+      processingStatus:
+        processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
@@ -115,15 +126,17 @@ export default function EpisodesPage() {
     fetchEpisodes({
       ...filters,
       movieId: movieId === "all" ? undefined : movieId,
-      uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
-      uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
+      uploadStatusS3:
+        uploadStatusS3 === "all" ? undefined : (uploadStatusS3 as any),
+      uploadStatusMinio:
+        uploadStatusMinio === "all" ? undefined : (uploadStatusMinio as any),
+      processingStatus:
+        processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
   const handleView = (episode: Episode) => {
-    setSelectedEpisode(episode);
-    setIsOpenViewModal(true);
+    navigate(`${APP_ROUTES.EPISODES}/${episode.id}`);
   };
 
   const handleEdit = (episode: Episode) => {
@@ -219,15 +232,6 @@ export default function EpisodesPage() {
           />
         )}
 
-        <ModalViewEpisode
-          isOpen={isOpenViewModal}
-          onClose={() => {
-            setIsOpenViewModal(false);
-            setSelectedEpisode(null);
-          }}
-          episodeId={selectedEpisode?.id || null}
-        />
-
         <ModalEditEpisode
           isOpen={isOpenEditModal}
           onClose={() => {
@@ -254,4 +258,3 @@ export default function EpisodesPage() {
     </div>
   );
 }
-

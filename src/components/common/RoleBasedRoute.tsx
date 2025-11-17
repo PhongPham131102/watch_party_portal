@@ -2,6 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { usePermission } from "@/hooks";
 import { APP_ROUTES } from "@/constants";
 import type { RBACActionType, RBACModuleType } from "@/types";
+import type React from "react";
 
 interface RoleBasedRouteProps {
   children: React.ReactNode;
