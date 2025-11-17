@@ -33,6 +33,7 @@ interface SidebarProps {
   onToggle: () => void;
   onLogout: () => void;
   currentPath: string;
+  pageTitle?: string;
 }
 
 interface MenuItem {
@@ -162,6 +163,7 @@ export function Sidebar({
   onToggle,
   onLogout,
   currentPath,
+  pageTitle = "Hệ thống quản trị",
 }: SidebarProps) {
   const navigate = useNavigate();
   const filteredMenuItems = useFilteredMenuItems();
@@ -179,7 +181,7 @@ export function Sidebar({
             <>
               <Logo size="sm" />
               <span className="text-lg font-bold text-gray-900 dark:text-white transition-all duration-200 truncate">
-                Hệ thống quản trị
+                {pageTitle}
               </span>
             </>
           )}

@@ -35,3 +35,22 @@ export const APP_ROUTES = {
   ROLES: "/quyen-han",
   GENRES: "/the-loai",
 } as const;
+
+// Page titles mapping
+export const PAGE_TITLES: Record<string, string> = {
+  "/": "Dashboard",
+  "/dashboard": "Dashboard",
+  "/users": "Quản lý người dùng",
+  "/movies": "Quản lý phim",
+  "/tap-phim": "Quản lý tập phim",
+  "/actors": "Quản lý diễn viên",
+  "/dao-dien": "Quản lý đạo diễn",
+  "/countries": "Quản lý quốc gia",
+  "/rooms": "Quản lý phòng",
+  "/comments": "Quản lý bình luận",
+  "/quyen-han": "Quản lý vai trò",
+  "/the-loai": "Quản lý thể loại",
+  "/profile": "Hồ sơ cá nhân",
+  "/settings": "Cài đặt",
+  "/403": "Không có quyền truy cập",
+} as const;

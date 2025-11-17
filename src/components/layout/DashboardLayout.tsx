@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/ui/sidebar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logoutUser } from "@/store/slices/authSlice";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 import { Menu, User, Settings as SettingsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const pageTitle = usePageTitle(); // Get dynamic page title
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -45,6 +47,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         onToggle={toggleSidebar}
         onLogout={handleLogout}
         currentPath={location.pathname}
+        pageTitle={pageTitle}
       />
 
       {/* Main Content */}

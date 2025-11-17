@@ -6,6 +6,9 @@ export { default as useLocalStorage } from "./useLocalStorage";
 // Permission hook
 export { usePermission } from "./usePermission";
 
+// Page title hook
+export { usePageTitle } from "./usePageTitle";
+
 // Generic table filters with URL sync (RECOMMENDED)
 export { useTableFiltersWithURL } from "./useTableFiltersWithURL";
 export { useURLParams } from "./useURLParams";
