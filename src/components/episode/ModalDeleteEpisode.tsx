@@ -57,7 +57,7 @@ export default function ModalDeleteEpisode({
         {episode && (
           <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4 space-y-2">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600 text-white font-bold">
                 {episode.episodeNumber}
               </div>
               <div className="flex-1">
@@ -81,7 +81,7 @@ export default function ModalDeleteEpisode({
 
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
           <div className="flex gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
             <div className="text-sm text-amber-800 dark:text-amber-200">
               <p className="font-medium mb-1">Cảnh báo:</p>
               <ul className="list-disc list-inside space-y-1">

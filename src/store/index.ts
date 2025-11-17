@@ -9,6 +9,7 @@ import countryReducer from './slices/countrySlice';
 import movieReducer from './slices/movieSlice';
 import episodeReducer from './slices/episodeSlice';
 import uploadReducer from './slices/uploadSlice';
+import { uploadPersistenceMiddleware } from './middleware/uploadPersistence';
 
 export const store = configureStore({
   reducer: {
@@ -26,7 +27,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(uploadPersistenceMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -10,12 +10,14 @@ import type { UploadEpisodeDto } from "@/types/episode.types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   startUpload as startUploadAction,
+  setTusUploadUrl as setTusUploadUrlAction,
   updateProgress as updateProgressAction,
   pauseUpload as pauseUploadAction,
   resumeUpload as resumeUploadAction,
   completeUpload as completeUploadAction,
   errorUpload as errorUploadAction,
 } from "@/store/slices/uploadSlice";
+import { findTusUploadByUrl, removeTusStoredUpload } from "@/lib/tusStorage";
 
 interface TusUploadComponentProps {
   episodeMetadata: Omit<UploadEpisodeDto, "filename" | "filetype">;
@@ -103,6 +105,22 @@ export function TusUploadComponent({
       return;
     }
 
+    // Validate required metadata fields
+    if (!episodeMetadata.movieId || episodeMetadata.movieId.trim() === '') {
+      showToast.error("Lỗi", "Vui lòng chọn phim");
+      return;
+    }
+
+    if (!episodeMetadata.title || episodeMetadata.title.trim() === '') {
+      showToast.error("Lỗi", "Vui lòng nhập tiêu đề tập phim");
+      return;
+    }
+
+    if (!episodeMetadata.episodeNumber || episodeMetadata.episodeNumber < 1) {
+      showToast.error("Lỗi", "Vui lòng nhập số tập hợp lệ");
+      return;
+    }
+
     // TUS Upload URL - chỉ cần root path
     // Backend có 2 routes:
     // - POST /api/v1/episodes/upload (tạo session)
@@ -120,9 +138,9 @@ export function TusUploadComponent({
     const metadata: Record<string, string> = {
       filename: file.name,
       filetype: file.type,
-      movieId: episodeMetadata.movieId,
+      movieId: episodeMetadata.movieId.trim(), // ✅ Trim để đảm bảo không có spaces
       episodeNumber: episodeMetadata.episodeNumber.toString(),
-      title: episodeMetadata.title,
+      title: episodeMetadata.title.trim(), // ✅ Trim để đảm bảo không có spaces
     };
 
     if (episodeMetadata.description) {
@@ -146,18 +164,43 @@ export function TusUploadComponent({
       },
       onError: (error) => {
         console.error("❌ Upload error:", error);
-        setUploadStatus("error");
-        setErrorMessage(error.message);
-        showToast.error("Lỗi upload", error.message);
         
-        // Dispatch to Redux
+        // Check if it's a network error (can be resumed)
+        const isNetworkError = 
+          error.message?.includes("network") ||
+          error.message?.includes("NetworkError") ||
+          error.message?.includes("Failed to fetch") ||
+          error.originalRequest?.status === 0; // Status 0 usually means network error
+
         // Get uploadId from state or from upload.url
         const currentUploadId = uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
+        
         if (currentUploadId) {
           if (!uploadId) {
             setUploadId(currentUploadId);
           }
-          dispatch(errorUploadAction({ uploadId: currentUploadId, errorMessage: error.message }));
+
+          if (isNetworkError) {
+            // Network error - set to paused so user can resume
+            const errorMsg = `Lỗi kết nối: ${error.message}. Bạn có thể resume sau.`;
+            setUploadStatus("paused");
+            setErrorMessage(errorMsg);
+            dispatch(pauseUploadAction({ uploadId: currentUploadId, errorMessage: errorMsg }));
+            showToast.warning(
+              "Mất kết nối",
+              "Upload bị tạm dừng do lỗi mạng. Bạn có thể resume sau."
+            );
+          } else {
+            // Fatal error - set to error
+            setUploadStatus("error");
+            setErrorMessage(error.message);
+            dispatch(errorUploadAction({ uploadId: currentUploadId, errorMessage: error.message }));
+            showToast.error("Lỗi upload", error.message);
+          }
+        } else {
+          setUploadStatus("error");
+          setErrorMessage(error.message);
+          showToast.error("Lỗi upload", error.message);
         }
         
         onUploadError?.(error.message);
@@ -220,6 +263,13 @@ export function TusUploadComponent({
             console.log("✅ Got upload ID from URL:", uploadIdFromUrl);
             setUploadId(uploadIdFromUrl);
             
+            // Xóa TUS storage vì upload đã completed
+            const tusStored = findTusUploadByUrl(uploadUrl);
+            if (tusStored) {
+              console.log("🗑️ Xóa TUS storage vì upload đã completed:", tusStored.key);
+              removeTusStoredUpload(tusStored.key);
+            }
+            
             // Dispatch to Redux
             dispatch(completeUploadAction({ uploadId: uploadIdFromUrl }));
             
@@ -252,6 +302,7 @@ export function TusUploadComponent({
             dispatch(
               startUploadAction({
                 uploadId: uploadIdFromHeader,
+                tusUploadUrl: location, // Save TUS upload URL for resuming
                 file: {
                   name: file.name,
                   size: file.size,
@@ -427,7 +478,20 @@ export function TusUploadComponent({
           {/* Control buttons */}
           <div className="flex gap-2">
             {uploadStatus === "idle" && (
-              <Button type="button" onClick={startUpload} className="flex-1">
+              <Button 
+                type="button" 
+                onClick={startUpload} 
+                className="flex-1"
+                disabled={
+                  !file || 
+                  !episodeMetadata.movieId || 
+                  episodeMetadata.movieId.trim() === '' ||
+                  !episodeMetadata.title || 
+                  episodeMetadata.title.trim() === '' ||
+                  !episodeMetadata.episodeNumber || 
+                  episodeMetadata.episodeNumber < 1
+                }
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Bắt đầu upload
               </Button>
