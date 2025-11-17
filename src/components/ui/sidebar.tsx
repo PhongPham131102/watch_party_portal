@@ -103,20 +103,6 @@ const menuItemsConfig: MenuItem[] = [
     action: RBACAction.READ,
   },
   {
-    icon: Video,
-    label: "Quản lý phòng",
-    path: APP_ROUTES.ROOMS,
-    module: RBACModule.ROOMS,
-    action: RBACAction.READ,
-  },
-  {
-    icon: MessageSquare,
-    label: "Quản lý bình luận",
-    path: APP_ROUTES.COMMENTS,
-    module: RBACModule.COMMENTS,
-    action: RBACAction.READ,
-  },
-  {
     icon: Shield,
     label: "Quản lý vai trò",
     path: APP_ROUTES.ROLES,

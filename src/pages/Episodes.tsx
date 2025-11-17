@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useEpisodeStore } from "@/store/slices/episodeSlice";
-import { usePermission, useTableFiltersWithURL, useDebounce } from "@/hooks";
+import { usePermission, useTableFiltersWithURL } from "@/hooks";
 import { RBACModule } from "@/types";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
@@ -42,8 +42,6 @@ export default function EpisodesPage() {
     isSearching,
     page: urlPage,
     limit: urlLimit,
-    customFilters,
-    setFilter,
   } = useTableFiltersWithURL<EpisodeSortKey>({
     defaultSortBy: "episodeNumber",
     defaultSortOrder: "ASC",
@@ -55,11 +53,6 @@ export default function EpisodesPage() {
   const [uploadStatusS3, setUploadStatusS3] = useState<string>("all");
   const [uploadStatusMinio, setUploadStatusMinio] = useState<string>("all");
   const [processingStatus, setProcessingStatus] = useState<string>("all");
-  const [episodeNumberFrom, setEpisodeNumberFrom] = useState<string>("all");
-  const [episodeNumberTo, setEpisodeNumberTo] = useState<string>("all");
-
-  const debouncedEpisodeFrom = useDebounce(episodeNumberFrom, 500);
-  const debouncedEpisodeTo = useDebounce(episodeNumberTo, 500);
 
   const [isOpenUploadModal, setIsOpenUploadModal] = useState(false);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
@@ -79,9 +72,7 @@ export default function EpisodesPage() {
         movieId: movieId === "all" ? undefined : movieId,
         uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
         uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-        processingStatus: processingStatus === "all" ? undefined : processingStatus as any,
-        episodeNumberFrom: debouncedEpisodeFrom === "all" ? undefined : parseInt(debouncedEpisodeFrom),
-        episodeNumberTo: debouncedEpisodeTo === "all" ? undefined : parseInt(debouncedEpisodeTo),
+        processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
       });
     }
   }, [
@@ -95,8 +86,6 @@ export default function EpisodesPage() {
     uploadStatusS3,
     uploadStatusMinio,
     processingStatus,
-    debouncedEpisodeFrom,
-    debouncedEpisodeTo,
   ]);
 
   const handleRefresh = () => {
@@ -106,9 +95,7 @@ export default function EpisodesPage() {
       movieId: movieId === "all" ? undefined : movieId,
       uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
       uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : processingStatus as any,
-      episodeNumberFrom: episodeNumberFrom === "all" ? undefined : parseInt(episodeNumberFrom),
-      episodeNumberTo: episodeNumberTo === "all" ? undefined : parseInt(episodeNumberTo),
+      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
@@ -119,7 +106,7 @@ export default function EpisodesPage() {
       movieId: movieId === "all" ? undefined : movieId,
       uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
       uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : processingStatus as any,
+      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
@@ -130,7 +117,7 @@ export default function EpisodesPage() {
       movieId: movieId === "all" ? undefined : movieId,
       uploadStatusS3: uploadStatusS3 === "all" ? undefined : uploadStatusS3 as any,
       uploadStatusMinio: uploadStatusMinio === "all" ? undefined : uploadStatusMinio as any,
-      processingStatus: processingStatus === "all" ? undefined : processingStatus as any,
+      processingStatus: processingStatus === "all" ? undefined : (processingStatus as any),
     });
   };
 
@@ -155,8 +142,6 @@ export default function EpisodesPage() {
     setUploadStatusS3("all");
     setUploadStatusMinio("all");
     setProcessingStatus("all");
-    setEpisodeNumberFrom("all");
-    setEpisodeNumberTo("all");
   };
 
   if (!canAccessPage) {
@@ -195,10 +180,6 @@ export default function EpisodesPage() {
           onUploadStatusS3Change={setUploadStatusS3}
           onUploadStatusMinioChange={setUploadStatusMinio}
           onProcessingStatusChange={setProcessingStatus}
-          episodeNumberFrom={episodeNumberFrom}
-          episodeNumberTo={episodeNumberTo}
-          onEpisodeNumberFromChange={setEpisodeNumberFrom}
-          onEpisodeNumberToChange={setEpisodeNumberTo}
           onClearFilters={handleClearAllFilters}
           isSearching={isSearching}
           onSearch={handleRefresh}

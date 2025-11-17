@@ -7,8 +7,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { UploadVideoStatus, VideoProcessingStatus } from "@/types/episode.types";
+import {
+  UploadVideoStatus,
+  VideoProcessingStatus,
+} from "@/types/episode.types";
+import { MovieSearchSelect } from "./MovieSearchSelect";
 
 interface EpisodeSearchFilterProps {
   search: string;
@@ -21,10 +24,6 @@ interface EpisodeSearchFilterProps {
   onUploadStatusS3Change: (value: string) => void;
   onUploadStatusMinioChange: (value: string) => void;
   onProcessingStatusChange: (value: string) => void;
-  episodeNumberFrom: string;
-  episodeNumberTo: string;
-  onEpisodeNumberFromChange: (value: string) => void;
-  onEpisodeNumberToChange: (value: string) => void;
   onClearFilters: () => void;
   isSearching: boolean;
   onSearch: () => void;
@@ -34,16 +33,13 @@ export function EpisodeSearchFilter({
   search,
   onSearchChange,
   movieId,
+  onMovieIdChange,
   uploadStatusS3,
   uploadStatusMinio,
   processingStatus,
   onUploadStatusS3Change,
   onUploadStatusMinioChange,
   onProcessingStatusChange,
-  episodeNumberFrom,
-  episodeNumberTo,
-  onEpisodeNumberFromChange,
-  onEpisodeNumberToChange,
   onClearFilters,
   isSearching,
   onSearch,
@@ -53,9 +49,7 @@ export function EpisodeSearchFilter({
     (movieId && movieId !== "all") ||
     uploadStatusS3 !== "all" ||
     uploadStatusMinio !== "all" ||
-    processingStatus !== "all" ||
-    episodeNumberFrom !== "all" ||
-    episodeNumberTo !== "all";
+    processingStatus !== "all";
 
   return (
     <SearchFilter
@@ -68,6 +62,13 @@ export function EpisodeSearchFilter({
       hasActiveFilters={hasActiveFilters}
       filters={
         <>
+          <MovieSearchSelect
+            value={movieId || "all"}
+            onChange={onMovieIdChange}
+            className="w-[220px]"
+            placeholder="Tìm kiếm phim..."
+          />
+
           {/* Upload Status S3 Filter */}
           <Select value={uploadStatusS3} onValueChange={onUploadStatusS3Change}>
             <SelectTrigger className="w-[180px] h-9">
@@ -128,32 +129,11 @@ export function EpisodeSearchFilter({
               <SelectItem value={VideoProcessingStatus.SUCCESS}>
                 Hoàn tất
               </SelectItem>
-              <SelectItem value={VideoProcessingStatus.FAILED}>Thất bại</SelectItem>
+              <SelectItem value={VideoProcessingStatus.FAILED}>
+                Thất bại
+              </SelectItem>
             </SelectContent>
           </Select>
-
-          {/* Episode Number Range */}
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              placeholder="Từ tập"
-              value={episodeNumberFrom === "all" ? "" : episodeNumberFrom}
-              onChange={(e) =>
-                onEpisodeNumberFromChange(e.target.value || "all")
-              }
-              className="w-[100px] h-9"
-              min="1"
-            />
-            <span className="text-gray-500 dark:text-gray-400">-</span>
-            <Input
-              type="number"
-              placeholder="Đến tập"
-              value={episodeNumberTo === "all" ? "" : episodeNumberTo}
-              onChange={(e) => onEpisodeNumberToChange(e.target.value || "all")}
-              className="w-[100px] h-9"
-              min="1"
-            />
-          </div>
         </>
       }
     />
