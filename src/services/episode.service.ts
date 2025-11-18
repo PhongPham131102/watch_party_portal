@@ -29,17 +29,26 @@ const PROGRESS_URL = "/upload-progress";
 
 export const episodeService = {
   // Get all episodes with filters and pagination
-  getEpisodes: async (params?: FetchEpisodesParams): Promise<ApiResponse<PaginatedEpisodes>> => {
+  getEpisodes: async (
+    params?: FetchEpisodesParams
+  ): Promise<ApiResponse<PaginatedEpisodes>> => {
     const queryParams = new URLSearchParams();
-    
+
     if (params?.page) queryParams.append("page", params.page.toString());
     if (params?.limit) queryParams.append("limit", params.limit.toString());
     if (params?.movieId) queryParams.append("movieId", params.movieId);
     if (params?.search) queryParams.append("search", params.search);
-    if (params?.uploadStatusS3) queryParams.append("uploadStatusS3", params.uploadStatusS3);
-    if (params?.uploadStatusMinio) queryParams.append("uploadStatusMinio", params.uploadStatusMinio);
-    if (params?.episodeNumberFrom) queryParams.append("episodeNumberFrom", params.episodeNumberFrom.toString());
-    if (params?.episodeNumberTo) queryParams.append("episodeNumberTo", params.episodeNumberTo.toString());
+    if (params?.uploadStatusS3)
+      queryParams.append("uploadStatusS3", params.uploadStatusS3);
+    if (params?.uploadStatusMinio)
+      queryParams.append("uploadStatusMinio", params.uploadStatusMinio);
+    if (params?.episodeNumberFrom)
+      queryParams.append(
+        "episodeNumberFrom",
+        params.episodeNumberFrom.toString()
+      );
+    if (params?.episodeNumberTo)
+      queryParams.append("episodeNumberTo", params.episodeNumberTo.toString());
     if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
     if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
 
@@ -51,13 +60,21 @@ export const episodeService = {
 
   // Get episode by ID
   getEpisodeById: async (id: string): Promise<ApiResponse<Episode>> => {
-    const response = await apiClient.get<ApiResponse<Episode>>(`${EPISODES_URL}/${id}`);
+    const response = await apiClient.get<ApiResponse<Episode>>(
+      `${EPISODES_URL}/${id}`
+    );
     return response.data;
   },
 
   // Update episode metadata (không upload video)
-  updateEpisode: async (id: string, data: UpdateEpisodeDto): Promise<ApiResponse<Episode>> => {
-    const response = await apiClient.patch<ApiResponse<Episode>>(`${EPISODES_URL}/${id}`, data);
+  updateEpisode: async (
+    id: string,
+    data: UpdateEpisodeDto
+  ): Promise<ApiResponse<Episode>> => {
+    const response = await apiClient.patch<ApiResponse<Episode>>(
+      `${EPISODES_URL}/${id}`,
+      data
+    );
     return response.data;
   },
 
@@ -67,7 +84,9 @@ export const episodeService = {
   },
 
   // Get upload progress by uploadId (REST fallback)
-  getUploadProgress: async (uploadId: string): Promise<ApiResponse<UploadProgressData>> => {
+  getUploadProgress: async (
+    uploadId: string
+  ): Promise<ApiResponse<UploadProgressData>> => {
     const response = await apiClient.get<ApiResponse<UploadProgressData>>(
       `${PROGRESS_URL}/${uploadId}`
     );
@@ -75,7 +94,9 @@ export const episodeService = {
   },
 
   // Get upload progress by episodeId (REST fallback)
-  getUploadProgressByEpisode: async (episodeId: string): Promise<ApiResponse<UploadProgressData>> => {
+  getUploadProgressByEpisode: async (
+    episodeId: string
+  ): Promise<ApiResponse<UploadProgressData>> => {
     const response = await apiClient.get<ApiResponse<UploadProgressData>>(
       `${PROGRESS_URL}/episode/${episodeId}`
     );
@@ -83,10 +104,12 @@ export const episodeService = {
   },
 
   // Get all active uploads
-  getAllActiveUploads: async (): Promise<ApiResponse<{ count: number; uploads: UploadProgressData[] }>> => {
-    const response = await apiClient.get<ApiResponse<{ count: number; uploads: UploadProgressData[] }>>(
-      `${PROGRESS_URL}/active/all`
-    );
+  getAllActiveUploads: async (): Promise<
+    ApiResponse<{ count: number; uploads: UploadProgressData[] }>
+  > => {
+    const response = await apiClient.get<
+      ApiResponse<{ count: number; uploads: UploadProgressData[] }>
+    >(`${PROGRESS_URL}/active/all`);
     return response.data;
   },
 
@@ -97,4 +120,3 @@ export const episodeService = {
     return `${API_BASE_URL}${UPLOAD_URL}`;
   },
 };
-

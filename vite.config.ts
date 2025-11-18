@@ -20,4 +20,24 @@ export default defineConfig({
       "@assets": path.resolve(import.meta.dirname, "./src/assets"),
     },
   },
+  server: {
+    proxy: {
+      // Proxy tất cả requests từ /api đến backend
+      "/api": {
+        target: process.env.VITE_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8888",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path, // Giữ nguyên path /api/...
+      },
+      // Nếu có endpoint /public hoặc các endpoint khác không có prefix /api
+      // Forward đến /api/v1/public (giả sử backend có prefix /api/v1)
+      // Nếu backend không có prefix, xóa dòng rewrite để giữ nguyên path
+      "/public": {
+        target: process.env.VITE_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8888",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => `/api/v1${path}`, // Thêm prefix /api/v1 vào /public
+      },
+    },
+  },
 });

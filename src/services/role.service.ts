@@ -1,5 +1,4 @@
 import apiClient from "./apiClient";
-import { API_BASE_URL } from "@/constants";
 
 export interface RolePermissions {
   [module: string]: string[];
@@ -44,46 +43,35 @@ interface ApiResponse<T> {
 
 export const roleService = {
   getRoles: async () => {
-    const response = await apiClient.get<ApiResponse<Role[]>>(
-      `${API_BASE_URL}/roles`
-    );
+    const response = await apiClient.get<ApiResponse<Role[]>>(`/roles`);
     return response.data;
   },
 
   getRoleById: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<Role>>(
-      `${API_BASE_URL}/roles/${id}`
-    );
+    const response = await apiClient.get<ApiResponse<Role>>(`/roles/${id}`);
     return response.data;
   },
 
   createRole: async (data: CreateRoleDto) => {
-    const response = await apiClient.post<ApiResponse<Role>>(
-      `${API_BASE_URL}/roles`,
-      data
-    );
+    const response = await apiClient.post<ApiResponse<Role>>(`/roles`, data);
     return response.data;
   },
 
   updateRole: async (id: string, data: UpdateRoleDto) => {
     const response = await apiClient.patch<ApiResponse<Role>>(
-      `${API_BASE_URL}/roles/${id}`,
+      `/roles/${id}`,
       data
     );
     return response.data;
   },
 
   deleteRole: async (id: string) => {
-    const response = await apiClient.delete<ApiResponse<null>>(
-      `${API_BASE_URL}/roles/${id}`
-    );
+    const response = await apiClient.delete<ApiResponse<null>>(`/roles/${id}`);
     return response.data;
   },
 
   seedDefaultRoles: async () => {
-    const response = await apiClient.post<ApiResponse<null>>(
-      `${API_BASE_URL}/roles/seed`
-    );
+    const response = await apiClient.post<ApiResponse<null>>(`/roles/seed`);
     return response.data;
   },
 };

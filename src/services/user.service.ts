@@ -1,5 +1,4 @@
 import apiClient from "./apiClient";
-import { API_BASE_URL } from "@/constants";
 
 export interface User {
   id: string;
@@ -53,8 +52,8 @@ export interface FetchUsersParams {
   search?: string;
   roleId?: string;
   isActive?: boolean;
-  sortBy?: 'createdAt' | 'username' | 'email';
-  sortOrder?: 'ASC' | 'DESC';
+  sortBy?: "createdAt" | "username" | "email";
+  sortOrder?: "ASC" | "DESC";
 }
 
 export const userService = {
@@ -64,33 +63,30 @@ export const userService = {
     if (params?.limit) searchParams.append("limit", params.limit.toString());
     if (params?.search) searchParams.append("search", params.search);
     if (params?.roleId) searchParams.append("roleId", params.roleId);
-    if (params?.isActive !== undefined) searchParams.append("isActive", params.isActive.toString());
+    if (params?.isActive !== undefined)
+      searchParams.append("isActive", params.isActive.toString());
     if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
     if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
 
-    const url = `${API_BASE_URL}/users${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
-    const response = await apiClient.get<ApiResponse<User[] | PaginatedUsers>>(url);
+    const url = `/users${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    const response =
+      await apiClient.get<ApiResponse<User[] | PaginatedUsers>>(url);
     return response.data;
   },
 
   getUserById: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<User>>(
-      `${API_BASE_URL}/users/${id}`
-    );
+    const response = await apiClient.get<ApiResponse<User>>(`/users/${id}`);
     return response.data;
   },
 
   createUser: async (data: CreateUserDto) => {
-    const response = await apiClient.post<ApiResponse<User>>(
-      `${API_BASE_URL}/users`,
-      data
-    );
+    const response = await apiClient.post<ApiResponse<User>>(`/users`, data);
     return response.data;
   },
 
   updateUser: async (id: string, data: UpdateUserDto) => {
     const response = await apiClient.patch<ApiResponse<User>>(
-      `${API_BASE_URL}/users/${id}`,
+      `/users/${id}`,
       data
     );
     return response.data;
@@ -98,15 +94,13 @@ export const userService = {
 
   toggleUserActive: async (id: string) => {
     const response = await apiClient.patch<ApiResponse<User>>(
-      `${API_BASE_URL}/users/${id}/toggle-active`
+      `/users/${id}/toggle-active`
     );
     return response.data;
   },
 
   deleteUser: async (id: string) => {
-    const response = await apiClient.delete<ApiResponse<null>>(
-      `${API_BASE_URL}/users/${id}`
-    );
+    const response = await apiClient.delete<ApiResponse<null>>(`/users/${id}`);
     return response.data;
   },
 };

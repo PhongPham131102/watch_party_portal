@@ -1,15 +1,13 @@
-import apiClient from './apiClient';
-import { API_ENDPOINTS } from '@/constants';
-import type { LoginCredentials, AuthResponse } from '@/types';
+import apiClient from "./apiClient";
+import type { LoginCredentials, AuthResponse } from "@/types";
 
 export const authService = {
   login: async (credentials: LoginCredentials) => {
-    const response = await apiClient.post<{ data: { user: any; accessToken: string } }>(
-      API_ENDPOINTS.AUTH.LOGIN,
-      credentials
-    );
+    const response = await apiClient.post<{
+      data: { user: any; accessToken: string };
+    }>(`/auth/login`, credentials);
     const { user, accessToken } = response.data.data;
-    
+
     // Transform response to extract permissions and role from user.role
     return {
       user,
@@ -24,12 +22,11 @@ export const authService = {
     email: string;
     password: string;
   }) => {
-    const response = await apiClient.post<{ data: { user: any; accessToken: string } }>(
-      API_ENDPOINTS.AUTH.REGISTER,
-      data
-    );
+    const response = await apiClient.post<{
+      data: { user: any; accessToken: string };
+    }>(`/auth/register`, data);
     const { user, accessToken } = response.data.data;
-    
+
     return {
       user,
       role: user.role.name,
@@ -39,11 +36,11 @@ export const authService = {
   },
 
   getCurrentUser: async () => {
-    const response = await apiClient.get<{ data: { user: any; accessToken: string } }>(
-      API_ENDPOINTS.AUTH.ME
-    );
+    const response = await apiClient.get<{
+      data: { user: any; accessToken: string };
+    }>(`/auth/me`);
     const { user, accessToken } = response.data.data;
-    
+
     return {
       user,
       role: user.role.name,
@@ -54,15 +51,13 @@ export const authService = {
 
   refreshToken: async () => {
     const response = await apiClient.post<{ data: AuthResponse }>(
-      API_ENDPOINTS.AUTH.REFRESH
+      `/auth/refresh`
     );
     return response.data.data;
   },
 
   logout: async () => {
-    const response = await apiClient.post<{ message: string }>(
-      API_ENDPOINTS.AUTH.LOGOUT
-    );
+    const response = await apiClient.post<{ message: string }>(`/auth/logout`);
     return response.data;
   },
 };

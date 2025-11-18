@@ -1,7 +1,10 @@
 export * from "./errorCodes";
 
+// Trong development, dùng relative path để Vite proxy hoạt động
+// Trong production, dùng absolute URL từ env hoặc default
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8888/api/v1";
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV ? "/api/v1" : "http://localhost:8888/api/v1");
 
 // WebSocket URL - không dùng /api/v1 prefix
 export const SOCKET_BASE_URL =
