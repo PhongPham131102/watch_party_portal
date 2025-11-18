@@ -1,5 +1,4 @@
 import apiClient from "./apiClient";
-import { API_BASE_URL } from "@/constants";
 import type { Actor, CreateActorDto, UpdateActorDto, FetchActorsParams } from "@/types/actor.types";
 
 export interface PaginatedActors {
@@ -27,14 +26,14 @@ export const actorService = {
     if (params?.sortBy) searchParams.append("sortBy", params.sortBy);
     if (params?.sortOrder) searchParams.append("sortOrder", params.sortOrder);
 
-    const url = `${API_BASE_URL}/actors${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+    const url = `/actors${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
     const response = await apiClient.get<ApiResponse<Actor[] | PaginatedActors>>(url);
     return response.data;
   },
 
   getActorById: async (id: string) => {
     const response = await apiClient.get<ApiResponse<Actor>>(
-      `${API_BASE_URL}/actors/${id}`
+      `/actors/${id}`
     );
     return response.data;
   },
@@ -48,7 +47,7 @@ export const actorService = {
     if (data.image) formData.append("image", data.image);
 
     const response = await apiClient.post<ApiResponse<Actor>>(
-      `${API_BASE_URL}/actors`,
+      `/actors`,
       formData,
       {
         headers: {
@@ -77,7 +76,7 @@ export const actorService = {
     // Trường hợp 3: Giữ nguyên - không gửi gì
 
     const response = await apiClient.patch<ApiResponse<Actor>>(
-      `${API_BASE_URL}/actors/${id}`,
+      `/actors/${id}`,
       formData,
       {
         headers: {
@@ -90,14 +89,14 @@ export const actorService = {
 
   deleteActor: async (id: string) => {
     const response = await apiClient.delete<ApiResponse<null>>(
-      `${API_BASE_URL}/actors/${id}`
+      `/actors/${id}`
     );
     return response.data;
   },
 
   searchActors: async (keyword: string) => {
     const response = await apiClient.get<ApiResponse<Actor[]>>(
-      `${API_BASE_URL}/actors/search?q=${encodeURIComponent(keyword)}`
+      `/actors/search?q=${encodeURIComponent(keyword)}`
     );
     return response.data;
   },
