@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Shield,
   Tags,
+  Layout,
 } from "lucide-react";
 import { APP_ROUTES } from "@/constants";
 import { useAppSelector } from "@/store/hooks";
@@ -64,6 +65,13 @@ const menuItemsConfig: MenuItem[] = [
     icon: Film,
     label: "Quản lý phim",
     path: APP_ROUTES.MOVIES,
+    module: RBACModule.MOVIES,
+    action: RBACAction.READ,
+  },
+  {
+    icon: Layout,
+    label: "Quản lý Hero Section",
+    path: APP_ROUTES.HERO_SECTIONS,
     module: RBACModule.MOVIES,
     action: RBACAction.READ,
   },

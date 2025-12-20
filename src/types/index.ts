@@ -5,3 +5,4 @@ export * from './actor.types';
 export * from './country.types';
 export * from './movie.types';
 export * from './episode.types';
+export * from './hero-section.types';

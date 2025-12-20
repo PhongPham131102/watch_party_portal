@@ -9,6 +9,7 @@ import countryReducer from './slices/countrySlice';
 import movieReducer from './slices/movieSlice';
 import episodeReducer from './slices/episodeSlice';
 import uploadReducer from './slices/uploadSlice';
+import heroSectionReducer from './slices/heroSectionSlice';
 import { uploadPersistenceMiddleware } from './middleware/uploadPersistence';
 
 export const store = configureStore({
@@ -23,6 +24,7 @@ export const store = configureStore({
     movies: movieReducer,
     episodes: episodeReducer,
     upload: uploadReducer,
+    heroSections: heroSectionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

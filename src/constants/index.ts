@@ -38,6 +38,7 @@ export const APP_ROUTES = {
   COMMENTS: "/comments",
   ROLES: "/quyen-han",
   GENRES: "/the-loai",
+  HERO_SECTIONS: "/hero-sections",
 } as const;
 
 // Page titles mapping
@@ -55,6 +56,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/comments": "Quản lý bình luận",
   "/quyen-han": "Quản lý vai trò",
   "/the-loai": "Quản lý thể loại",
+  "/hero-sections": "Quản lý Hero Section",
   "/profile": "Hồ sơ cá nhân",
   "/settings": "Cài đặt",
   "/403": "Không có quyền truy cập",

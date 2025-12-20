@@ -10,6 +10,7 @@ import CountriesPage from "@/pages/Countries";
 import MoviesPage from "@/pages/Movies";
 import EpisodesPage from "@/pages/Episodes";
 import EpisodeDetailPage from "@/pages/EpisodeDetail";
+import HeroSectionsPage from "@/pages/HeroSections";
 import { APP_ROUTES } from "@/constants";
 import { ProtectedRoute, PublicRoute } from "@/components/common";
 
@@ -93,6 +94,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <MoviesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={APP_ROUTES.HERO_SECTIONS}
+        element={
+          <ProtectedRoute>
+            <HeroSectionsPage />
           </ProtectedRoute>
         }
       />
