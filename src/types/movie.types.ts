@@ -8,6 +8,7 @@ export interface Movie {
   durationMinutes?: number;
   posterUrl?: string | null;
   backdropUrl?: string | null;
+  titleImageUrl?: string | null;
   trailerUrl?: string;
   averageRating: number;
   totalRatings: number;
@@ -33,6 +34,7 @@ export interface CreateMovieDto {
   contentType?: string;
   poster?: File;
   backdrop?: File;
+  titleImage?: File;
   genreIds?: string[];
   directorIds?: string[];
   actorIds?: string[];
@@ -50,8 +52,10 @@ export interface UpdateMovieDto {
   contentType?: string;
   poster?: File;
   backdrop?: File;
+  titleImage?: File;
   removePoster?: boolean;
   removeBackdrop?: boolean;
+  removeTitleImage?: boolean;
   genreIds?: string[];
   directorIds?: string[];
   actorIds?: string[];

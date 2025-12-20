@@ -57,10 +57,13 @@ export function ModalCreateMovie({
   const { addMovie, loading } = useMovieStore();
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [backdropPreview, setBackdropPreview] = useState<string | null>(null);
+  const [titleImagePreview, setTitleImagePreview] = useState<string | null>(null);
   const [isPosterDragging, setIsPosterDragging] = useState(false);
   const [isBackdropDragging, setIsBackdropDragging] = useState(false);
+  const [isTitleImageDragging, setIsTitleImageDragging] = useState(false);
   const posterInputRef = useRef<HTMLInputElement>(null);
   const backdropInputRef = useRef<HTMLInputElement>(null);
+  const titleImageInputRef = useRef<HTMLInputElement>(null);
 
   // Load options
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -93,6 +96,7 @@ export function ModalCreateMovie({
       form.reset();
       setPosterPreview(null);
       setBackdropPreview(null);
+      setTitleImagePreview(null);
       setSelectedGenres([]);
       setSelectedDirectors([]);
       setSelectedActors([]);
@@ -123,7 +127,7 @@ export function ModalCreateMovie({
 
   const handleFileChange = (
     file: File | undefined,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     if (file) {
       if (!file.type.startsWith("image/")) {
@@ -138,8 +142,10 @@ export function ModalCreateMovie({
       reader.onloadend = () => {
         if (type === "poster") {
           setPosterPreview(reader.result as string);
-        } else {
+        } else if (type === "backdrop") {
           setBackdropPreview(reader.result as string);
+        } else {
+          setTitleImagePreview(reader.result as string);
         }
       };
       reader.readAsDataURL(file);
@@ -149,34 +155,40 @@ export function ModalCreateMovie({
 
   const handleDragOver = (
     e: React.DragEvent,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(true);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(true);
+    } else {
+      setIsTitleImageDragging(true);
     }
   };
 
   const handleDragLeave = (
     e: React.DragEvent,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(false);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(false);
+    } else {
+      setIsTitleImageDragging(false);
     }
   };
 
-  const handleDrop = (e: React.DragEvent, type: "poster" | "backdrop") => {
+  const handleDrop = (e: React.DragEvent, type: "poster" | "backdrop" | "titleImage") => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(false);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(false);
+    } else {
+      setIsTitleImageDragging(false);
     }
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -184,18 +196,24 @@ export function ModalCreateMovie({
     }
   };
 
-  const handleRemoveImage = (type: "poster" | "backdrop") => {
+  const handleRemoveImage = (type: "poster" | "backdrop" | "titleImage") => {
     if (type === "poster") {
       setPosterPreview(null);
       form.setValue("poster", undefined);
       if (posterInputRef.current) {
         posterInputRef.current.value = "";
       }
-    } else {
+    } else if (type === "backdrop") {
       setBackdropPreview(null);
       form.setValue("backdrop", undefined);
       if (backdropInputRef.current) {
         backdropInputRef.current.value = "";
+      }
+    } else {
+      setTitleImagePreview(null);
+      form.setValue("titleImage", undefined);
+      if (titleImageInputRef.current) {
+        titleImageInputRef.current.value = "";
       }
     }
   };
@@ -212,6 +230,7 @@ export function ModalCreateMovie({
       contentType: data.contentType || "movie",
       poster: data.poster,
       backdrop: data.backdrop,
+      titleImage: data.titleImage,
       genreIds: selectedGenres,
       directorIds: selectedDirectors,
       actorIds: selectedActors,
@@ -227,14 +246,14 @@ export function ModalCreateMovie({
   }
 
   const renderImageUpload = (
-    type: "poster" | "backdrop",
+    type: "poster" | "backdrop" | "titleImage",
     label: string,
     icon: React.ReactNode
   ) => {
-    const preview = type === "poster" ? posterPreview : backdropPreview;
+    const preview = type === "poster" ? posterPreview : type === "backdrop" ? backdropPreview : titleImagePreview;
     const isDragging =
-      type === "poster" ? isPosterDragging : isBackdropDragging;
-    const inputRef = type === "poster" ? posterInputRef : backdropInputRef;
+      type === "poster" ? isPosterDragging : type === "backdrop" ? isBackdropDragging : isTitleImageDragging;
+    const inputRef = type === "poster" ? posterInputRef : type === "backdrop" ? backdropInputRef : titleImageInputRef;
 
     return (
       <FormField
@@ -541,6 +560,14 @@ export function ModalCreateMovie({
               {renderImageUpload(
                 "backdrop",
                 "Backdrop",
+                <ImageIcon className="h-6 w-6 text-gray-400" />
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {renderImageUpload(
+                "titleImage",
+                "Title Image",
                 <ImageIcon className="h-6 w-6 text-gray-400" />
               )}
             </div>

@@ -60,14 +60,19 @@ export function ModalEditMovie({
   const { modifyMovie, loading } = useMovieStore();
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
   const [backdropPreview, setBackdropPreview] = useState<string | null>(null);
+  const [titleImagePreview, setTitleImagePreview] = useState<string | null>(null);
   const [isPosterDragging, setIsPosterDragging] = useState(false);
   const [isBackdropDragging, setIsBackdropDragging] = useState(false);
+  const [isTitleImageDragging, setIsTitleImageDragging] = useState(false);
   const [isPosterRemoved, setIsPosterRemoved] = useState(false);
   const [isBackdropRemoved, setIsBackdropRemoved] = useState(false);
+  const [isTitleImageRemoved, setIsTitleImageRemoved] = useState(false);
   const [hasOriginalPoster, setHasOriginalPoster] = useState(false);
   const [hasOriginalBackdrop, setHasOriginalBackdrop] = useState(false);
+  const [hasOriginalTitleImage, setHasOriginalTitleImage] = useState(false);
   const posterInputRef = useRef<HTMLInputElement>(null);
   const backdropInputRef = useRef<HTMLInputElement>(null);
+  const titleImageInputRef = useRef<HTMLInputElement>(null);
 
   const [genres, setGenres] = useState<Genre[]>([]);
   const [directors, setDirectors] = useState<Director[]>([]);
@@ -118,8 +123,17 @@ export function ModalEditMovie({
         setHasOriginalBackdrop(false);
       }
 
+      if (movie.titleImageUrl) {
+        setTitleImagePreview(movie.titleImageUrl);
+        setHasOriginalTitleImage(true);
+      } else {
+        setTitleImagePreview(null);
+        setHasOriginalTitleImage(false);
+      }
+
       setIsPosterRemoved(false);
       setIsBackdropRemoved(false);
+      setIsTitleImageRemoved(false);
       
       loadOptions();
     }
@@ -155,7 +169,7 @@ export function ModalEditMovie({
 
   const handleFileChange = (
     file: File | undefined,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     if (file) {
       if (!file.type.startsWith("image/")) {
@@ -171,9 +185,12 @@ export function ModalEditMovie({
         if (type === "poster") {
           setPosterPreview(reader.result as string);
           setIsPosterRemoved(false);
-        } else {
+        } else if (type === "backdrop") {
           setBackdropPreview(reader.result as string);
           setIsBackdropRemoved(false);
+        } else {
+          setTitleImagePreview(reader.result as string);
+          setIsTitleImageRemoved(false);
         }
       };
       reader.readAsDataURL(file);
@@ -183,34 +200,40 @@ export function ModalEditMovie({
 
   const handleDragOver = (
     e: React.DragEvent,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(true);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(true);
+    } else {
+      setIsTitleImageDragging(true);
     }
   };
 
   const handleDragLeave = (
     e: React.DragEvent,
-    type: "poster" | "backdrop"
+    type: "poster" | "backdrop" | "titleImage"
   ) => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(false);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(false);
+    } else {
+      setIsTitleImageDragging(false);
     }
   };
 
-  const handleDrop = (e: React.DragEvent, type: "poster" | "backdrop") => {
+  const handleDrop = (e: React.DragEvent, type: "poster" | "backdrop" | "titleImage") => {
     e.preventDefault();
     if (type === "poster") {
       setIsPosterDragging(false);
-    } else {
+    } else if (type === "backdrop") {
       setIsBackdropDragging(false);
+    } else {
+      setIsTitleImageDragging(false);
     }
     const file = e.dataTransfer.files[0];
     if (file) {
@@ -218,7 +241,7 @@ export function ModalEditMovie({
     }
   };
 
-  const handleRemoveImage = (type: "poster" | "backdrop") => {
+  const handleRemoveImage = (type: "poster" | "backdrop" | "titleImage") => {
     if (type === "poster") {
       setPosterPreview(null);
       setIsPosterRemoved(true);
@@ -226,12 +249,19 @@ export function ModalEditMovie({
       if (posterInputRef.current) {
         posterInputRef.current.value = "";
       }
-    } else {
+    } else if (type === "backdrop") {
       setBackdropPreview(null);
       setIsBackdropRemoved(true);
       form.setValue("backdrop", undefined);
       if (backdropInputRef.current) {
         backdropInputRef.current.value = "";
+      }
+    } else {
+      setTitleImagePreview(null);
+      setIsTitleImageRemoved(true);
+      form.setValue("titleImage", undefined);
+      if (titleImageInputRef.current) {
+        titleImageInputRef.current.value = "";
       }
     }
   };
@@ -268,6 +298,13 @@ export function ModalEditMovie({
       movieData.removeBackdrop = true;
     }
 
+    // Handle titleImage: upload new OR remove OR keep original
+    if (data.titleImage) {
+      movieData.titleImage = data.titleImage;
+    } else if (isTitleImageRemoved && hasOriginalTitleImage) {
+      movieData.removeTitleImage = true;
+    }
+
     const result = await modifyMovie(movie.id, movieData);
 
     if (result.type === "movies/updateMovie/fulfilled") {
@@ -277,15 +314,15 @@ export function ModalEditMovie({
   }
 
   const renderImageUpload = (
-    type: "poster" | "backdrop",
+    type: "poster" | "backdrop" | "titleImage",
     label: string,
     icon: React.ReactNode,
     currentUrl: string | null | undefined
   ) => {
-    const preview = type === "poster" ? posterPreview : backdropPreview;
+    const preview = type === "poster" ? posterPreview : type === "backdrop" ? backdropPreview : titleImagePreview;
     const isDragging =
-      type === "poster" ? isPosterDragging : isBackdropDragging;
-    const inputRef = type === "poster" ? posterInputRef : backdropInputRef;
+      type === "poster" ? isPosterDragging : type === "backdrop" ? isBackdropDragging : isTitleImageDragging;
+    const inputRef = type === "poster" ? posterInputRef : type === "backdrop" ? backdropInputRef : titleImageInputRef;
 
     return (
       <FormField
@@ -598,6 +635,15 @@ export function ModalEditMovie({
                 "Backdrop",
                 <ImageIcon className="h-6 w-6 text-gray-400" />,
                 movie.backdropUrl
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {renderImageUpload(
+                "titleImage",
+                "Title Image",
+                <ImageIcon className="h-6 w-6 text-gray-400" />,
+                movie.titleImageUrl
               )}
             </div>
 

@@ -78,6 +78,10 @@ export const movieService = {
     if (data.backdrop) {
       formData.append("backdrop", data.backdrop);
     }
+    
+    if (data.titleImage) {
+      formData.append("titleImage", data.titleImage);
+    }
 
     const response = await apiClient.post<ApiResponse<Movie>>(MOVIES_URL, formData, {
       headers: {
@@ -142,6 +146,13 @@ export const movieService = {
       formData.append("backdrop", data.backdrop);
     } else if (data.removeBackdrop) {
       formData.append("removeBackdrop", "true");
+    }
+    
+    // Handle titleImage
+    if (data.titleImage) {
+      formData.append("titleImage", data.titleImage);
+    } else if (data.removeTitleImage) {
+      formData.append("removeTitleImage", "true");
     }
 
     const response = await apiClient.patch<ApiResponse<Movie>>(`${MOVIES_URL}/${id}`, formData, {
