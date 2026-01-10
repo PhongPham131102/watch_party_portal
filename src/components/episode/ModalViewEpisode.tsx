@@ -7,7 +7,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { UploadVideoStatus, VideoProcessingStatus } from "@/types/episode.types";
+import {
+  UploadVideoStatus,
+  VideoProcessingStatus,
+} from "@/types/episode.types";
 import { Loader2, Film, Clock, Calendar, Video, Cog } from "lucide-react";
 
 interface ModalViewEpisodeProps {
@@ -21,7 +24,8 @@ export default function ModalViewEpisode({
   onClose,
   episodeId,
 }: ModalViewEpisodeProps) {
-  const { currentEpisode, isFetchingDetail, fetchEpisodeById } = useEpisodeStore();
+  const { currentEpisode, isFetchingDetail, fetchEpisodeById } =
+    useEpisodeStore();
 
   useEffect(() => {
     if (isOpen && episodeId) {
@@ -30,7 +34,7 @@ export default function ModalViewEpisode({
   }, [isOpen, episodeId]);
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return '-';
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -41,7 +45,7 @@ export default function ModalViewEpisode({
   };
 
   const formatDuration = (minutes?: number) => {
-    if (!minutes) return '-';
+    if (!minutes) return "-";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return hours > 0 ? `${hours} giờ ${mins} phút` : `${mins} phút`;
@@ -49,41 +53,58 @@ export default function ModalViewEpisode({
 
   const getStatusBadge = (status: UploadVideoStatus) => {
     const statusConfig = {
-      [UploadVideoStatus.PENDING]: { variant: "secondary" as const, label: "Chờ xử lý" },
-      [UploadVideoStatus.PROCESSING]: { variant: "default" as const, label: "Đang xử lý" },
-      [UploadVideoStatus.SUCCESS]: { variant: "default" as const, label: "Thành công", className: "bg-green-500 hover:bg-green-600" },
-      [UploadVideoStatus.FAILED]: { variant: "destructive" as const, label: "Thất bại" },
+      [UploadVideoStatus.PENDING]: {
+        variant: "secondary" as const,
+        label: "Chờ xử lý",
+      },
+      [UploadVideoStatus.PROCESSING]: {
+        variant: "default" as const,
+        label: "Đang xử lý",
+      },
+      [UploadVideoStatus.SUCCESS]: {
+        variant: "default" as const,
+        label: "Thành công",
+        className: "bg-green-500 hover:bg-green-600",
+      },
+      [UploadVideoStatus.FAILED]: {
+        variant: "destructive" as const,
+        label: "Thất bại",
+      },
     };
-    const config = statusConfig[status];
-    return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
+    const config: any = statusConfig[status];
+    return (
+      <Badge variant={config.variant} className={config.className}>
+        {config.label}
+      </Badge>
+    );
   };
 
   const getProcessingStatusBadge = (status: VideoProcessingStatus) => {
     const statusConfig = {
-      [VideoProcessingStatus.PENDING]: { 
-        variant: "secondary" as const, 
+      [VideoProcessingStatus.PENDING]: {
+        variant: "secondary" as const,
         label: "Chờ xử lý",
         icon: null,
       },
-      [VideoProcessingStatus.PROCESSING]: { 
-        variant: "default" as const, 
+      [VideoProcessingStatus.PROCESSING]: {
+        variant: "default" as const,
         label: "Đang xử lý",
         className: "bg-amber-500 hover:bg-amber-600",
         icon: <Loader2 className="h-3 w-3 animate-spin mr-1" />,
       },
-      [VideoProcessingStatus.SUCCESS]: { 
-        variant: "default" as const, 
-        label: "Hoàn tất", 
+      [VideoProcessingStatus.SUCCESS]: {
+        variant: "default" as const,
+        label: "Hoàn tất",
         className: "bg-green-500 hover:bg-green-600",
         icon: null,
       },
-      [VideoProcessingStatus.FAILED]: { 
-        variant: "destructive" as const, 
+      [VideoProcessingStatus.FAILED]: {
+        variant: "destructive" as const,
         label: "Thất bại",
         icon: null,
       },
     };
-    const config = statusConfig[status];
+    const config: any = statusConfig[status];
     return (
       <Badge variant={config.variant} className={config.className}>
         {config.icon}
@@ -115,12 +136,12 @@ export default function ModalViewEpisode({
                   Số tập
                 </label>
                 <div className="flex items-center gap-2">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-blue-600 text-white font-bold text-lg">
                     {currentEpisode.episodeNumber}
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Phim
@@ -128,7 +149,7 @@ export default function ModalViewEpisode({
                 <div className="flex items-center gap-2">
                   <Film className="h-4 w-4 text-gray-400" />
                   <p className="text-base font-medium text-gray-900 dark:text-white">
-                    {currentEpisode.movie?.title || '-'}
+                    {currentEpisode.movie?.title || "-"}
                   </p>
                 </div>
               </div>
@@ -167,7 +188,7 @@ export default function ModalViewEpisode({
                   {formatDuration(currentEpisode.durationMinutes)}
                 </p>
               </div>
-              
+
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
@@ -192,12 +213,15 @@ export default function ModalViewEpisode({
                   </span>
                   {getProcessingStatusBadge(currentEpisode.processingStatus)}
                 </div>
-                {currentEpisode.processingStatus === VideoProcessingStatus.PROCESSING && (
+                {currentEpisode.processingStatus ===
+                  VideoProcessingStatus.PROCESSING && (
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
-                    Video đang được xử lý. Vui lòng chờ hoàn tất trước khi thao tác.
+                    Video đang được xử lý. Vui lòng chờ hoàn tất trước khi thao
+                    tác.
                   </p>
                 )}
-                {currentEpisode.processingStatus === VideoProcessingStatus.FAILED && (
+                {currentEpisode.processingStatus ===
+                  VideoProcessingStatus.FAILED && (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-2">
                     Xử lý video thất bại. Vui lòng liên hệ quản trị viên.
                   </p>
@@ -215,23 +239,19 @@ export default function ModalViewEpisode({
                   <label className="text-xs text-gray-500 dark:text-gray-400">
                     Amazon S3
                   </label>
-                  <div>
-                    {getStatusBadge(currentEpisode.uploadStatusS3)}
-                  </div>
+                  <div>{getStatusBadge(currentEpisode.uploadStatusS3)}</div>
                   {currentEpisode.masterM3u8S3 && (
                     <p className="text-xs text-gray-500 truncate">
                       {currentEpisode.masterM3u8S3}
                     </p>
                   )}
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="text-xs text-gray-500 dark:text-gray-400">
                     MinIO
                   </label>
-                  <div>
-                    {getStatusBadge(currentEpisode.uploadStatusMinio)}
-                  </div>
+                  <div>{getStatusBadge(currentEpisode.uploadStatusMinio)}</div>
                   {currentEpisode.masterM3u8Minio && (
                     <p className="text-xs text-gray-500 truncate">
                       {currentEpisode.masterM3u8Minio}
@@ -242,37 +262,44 @@ export default function ModalViewEpisode({
             </div>
 
             {/* Video Qualities */}
-            {(currentEpisode.qualitiesS3?.length || currentEpisode.qualitiesMinio?.length) && (
+            {(currentEpisode.qualitiesS3?.length ||
+              currentEpisode.qualitiesMinio?.length) && (
               <div className="border-t pt-4">
                 <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
                   Chất lượng video
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  {currentEpisode.qualitiesS3 && currentEpisode.qualitiesS3.length > 0 && (
-                    <div className="space-y-2">
-                      <label className="text-xs text-gray-500 dark:text-gray-400">S3</label>
-                      <div className="flex flex-wrap gap-2">
-                        {currentEpisode.qualitiesS3.map((q, idx) => (
-                          <Badge key={idx} variant="outline">
-                            {q.quality}
-                          </Badge>
-                        ))}
+                  {currentEpisode.qualitiesS3 &&
+                    currentEpisode.qualitiesS3.length > 0 && (
+                      <div className="space-y-2">
+                        <label className="text-xs text-gray-500 dark:text-gray-400">
+                          S3
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {currentEpisode.qualitiesS3.map((q, idx) => (
+                            <Badge key={idx} variant="outline">
+                              {q.quality}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  
-                  {currentEpisode.qualitiesMinio && currentEpisode.qualitiesMinio.length > 0 && (
-                    <div className="space-y-2">
-                      <label className="text-xs text-gray-500 dark:text-gray-400">MinIO</label>
-                      <div className="flex flex-wrap gap-2">
-                        {currentEpisode.qualitiesMinio.map((q, idx) => (
-                          <Badge key={idx} variant="outline">
-                            {q.quality}
-                          </Badge>
-                        ))}
+                    )}
+
+                  {currentEpisode.qualitiesMinio &&
+                    currentEpisode.qualitiesMinio.length > 0 && (
+                      <div className="space-y-2">
+                        <label className="text-xs text-gray-500 dark:text-gray-400">
+                          MinIO
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {currentEpisode.qualitiesMinio.map((q, idx) => (
+                            <Badge key={idx} variant="outline">
+                              {q.quality}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
             )}
@@ -308,4 +335,3 @@ export default function ModalViewEpisode({
     </Dialog>
   );
 }
-

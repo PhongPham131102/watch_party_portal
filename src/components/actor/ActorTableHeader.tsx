@@ -1,20 +1,33 @@
-import { TableHeader } from "@/components/common";
+import { TableHeader } from "@/components/common/TableHeader";
+import type { SortConfig, TableColumn } from "@/components/common/TableHeader";
+
+type ActorSortKey = "name" | "dateOfBirth" | "createdAt";
 
 interface ActorTableHeaderProps {
-  sortBy: "name" | "dateOfBirth" | "createdAt";
+  sortBy: ActorSortKey;
   sortOrder: "ASC" | "DESC";
-  // eslint-disable-next-line no-unused-vars
-  onSort: (column: "name" | "dateOfBirth" | "createdAt") => void;
+  onSort: (column: ActorSortKey) => void;
 }
 
-export function ActorTableHeader({ sortBy, sortOrder, onSort }: ActorTableHeaderProps) {
-  const columns = [
-    { key: "name" as const, label: "Tên diễn viên" },
-    { key: null, label: "Tiểu sử" },
-    { key: "dateOfBirth" as const, label: "Ngày sinh" },
-    { key: "createdAt" as const, label: "Ngày tạo" },
-    { key: null, label: "Thao tác" },
-  ];
+const columns: TableColumn<ActorSortKey>[] = [
+  { key: "name", label: "Tên diễn viên", sortable: true },
+  { key: "", label: "Tiểu sử", sortable: false },
+  { key: "dateOfBirth", label: "Ngày sinh", sortable: true },
+  { key: "createdAt", label: "Ngày tạo", sortable: true },
+  { key: "", label: "Thao tác", sortable: false, align: "center" },
+];
 
-  return <TableHeader columns={columns} sortBy={sortBy} sortOrder={sortOrder} onSort={onSort} />;
+export function ActorTableHeader({
+  sortBy,
+  sortOrder,
+  onSort,
+}: ActorTableHeaderProps) {
+  const sortConfig: SortConfig<ActorSortKey> = {
+    sortBy,
+    sortOrder,
+  };
+
+  return (
+    <TableHeader columns={columns} sortConfig={sortConfig} onSort={onSort} />
+  );
 }

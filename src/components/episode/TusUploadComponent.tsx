@@ -10,7 +10,6 @@ import type { UploadEpisodeDto } from "@/types/episode.types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   startUpload as startUploadAction,
-  setTusUploadUrl as setTusUploadUrlAction,
   updateProgress as updateProgressAction,
   pauseUpload as pauseUploadAction,
   resumeUpload as resumeUploadAction,
@@ -52,7 +51,7 @@ export function TusUploadComponent({
 }: TusUploadComponentProps) {
   const dispatch = useAppDispatch();
   const movies = useAppSelector((state) => state.movies.movies);
-  
+
   // Get movie title from store
   const movie = movies.find((m) => m.id === episodeMetadata.movieId);
   const movieTitle = movie?.title;
@@ -106,12 +105,12 @@ export function TusUploadComponent({
     }
 
     // Validate required metadata fields
-    if (!episodeMetadata.movieId || episodeMetadata.movieId.trim() === '') {
+    if (!episodeMetadata.movieId || episodeMetadata.movieId.trim() === "") {
       showToast.error("Lỗi", "Vui lòng chọn phim");
       return;
     }
 
-    if (!episodeMetadata.title || episodeMetadata.title.trim() === '') {
+    if (!episodeMetadata.title || episodeMetadata.title.trim() === "") {
       showToast.error("Lỗi", "Vui lòng nhập tiêu đề tập phim");
       return;
     }
@@ -164,17 +163,18 @@ export function TusUploadComponent({
       },
       onError: (error) => {
         console.error("❌ Upload error:", error);
-        
+
         // Check if it's a network error (can be resumed)
-        const isNetworkError = 
+        const isNetworkError =
           error.message?.includes("network") ||
           error.message?.includes("NetworkError") ||
           error.message?.includes("Failed to fetch") ||
-          error.originalRequest?.status === 0; // Status 0 usually means network error
+          (error as any)?.originalRequest?.status === 0; // Status 0 usually means network error
 
         // Get uploadId from state or from upload.url
-        const currentUploadId = uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
-        
+        const currentUploadId =
+          uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
+
         if (currentUploadId) {
           if (!uploadId) {
             setUploadId(currentUploadId);
@@ -185,7 +185,12 @@ export function TusUploadComponent({
             const errorMsg = `Lỗi kết nối: ${error.message}. Bạn có thể resume sau.`;
             setUploadStatus("paused");
             setErrorMessage(errorMsg);
-            dispatch(pauseUploadAction({ uploadId: currentUploadId, errorMessage: errorMsg }));
+            dispatch(
+              pauseUploadAction({
+                uploadId: currentUploadId,
+                errorMessage: errorMsg,
+              })
+            );
             showToast.warning(
               "Mất kết nối",
               "Upload bị tạm dừng do lỗi mạng. Bạn có thể resume sau."
@@ -194,7 +199,12 @@ export function TusUploadComponent({
             // Fatal error - set to error
             setUploadStatus("error");
             setErrorMessage(error.message);
-            dispatch(errorUploadAction({ uploadId: currentUploadId, errorMessage: error.message }));
+            dispatch(
+              errorUploadAction({
+                uploadId: currentUploadId,
+                errorMessage: error.message,
+              })
+            );
             showToast.error("Lỗi upload", error.message);
           }
         } else {
@@ -202,7 +212,7 @@ export function TusUploadComponent({
           setErrorMessage(error.message);
           showToast.error("Lỗi upload", error.message);
         }
-        
+
         onUploadError?.(error.message);
       },
       onProgress: (bytesUploaded, bytesTotal) => {
@@ -213,7 +223,7 @@ export function TusUploadComponent({
         const elapsedSeconds = (Date.now() - startTime) / 1000;
         let speed = "";
         let eta = "";
-        
+
         if (elapsedSeconds > 0) {
           const speedBps = bytesUploaded / elapsedSeconds; // bytes/second
           const speedMBps = (speedBps / 1024 / 1024).toFixed(2); // MB/s
@@ -236,13 +246,21 @@ export function TusUploadComponent({
 
         // Dispatch to Redux
         // Get uploadId from state or from upload.url
-        const currentUploadId = uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
+        const currentUploadId =
+          uploadId || (upload.url ? upload.url.split("/").pop() || null : null);
         if (currentUploadId) {
           // Update state if not set yet
           if (!uploadId) {
             setUploadId(currentUploadId);
           }
-          dispatch(updateProgressAction({ uploadId: currentUploadId, progress: percentage, speed, eta }));
+          dispatch(
+            updateProgressAction({
+              uploadId: currentUploadId,
+              progress: percentage,
+              speed,
+              eta,
+            })
+          );
         }
       },
       onSuccess: () => {
@@ -262,17 +280,20 @@ export function TusUploadComponent({
           if (uploadIdFromUrl) {
             console.log("✅ Got upload ID from URL:", uploadIdFromUrl);
             setUploadId(uploadIdFromUrl);
-            
+
             // Xóa TUS storage vì upload đã completed
             const tusStored = findTusUploadByUrl(uploadUrl);
             if (tusStored) {
-              console.log("🗑️ Xóa TUS storage vì upload đã completed:", tusStored.key);
+              console.log(
+                "🗑️ Xóa TUS storage vì upload đã completed:",
+                tusStored.key
+              );
               removeTusStoredUpload(tusStored.key);
             }
-            
+
             // Dispatch to Redux
             dispatch(completeUploadAction({ uploadId: uploadIdFromUrl }));
-            
+
             // Note: Backend xử lý video ở background
             // episodeId sẽ được tạo sau khi backend process xong
             // User có thể refresh trang để xem episode mới
@@ -297,7 +318,7 @@ export function TusUploadComponent({
               uploadIdFromHeader
             );
             setUploadId(uploadIdFromHeader);
-            
+
             // Dispatch to Redux - Start upload tracking
             dispatch(
               startUploadAction({
@@ -317,7 +338,7 @@ export function TusUploadComponent({
                 startTime: startTime,
               })
             );
-            
+
             // Call onUploadStart callback (to close modal, etc.)
             onUploadStart?.(uploadIdFromHeader);
           }
@@ -348,7 +369,7 @@ export function TusUploadComponent({
       uploadRef.current.abort();
       setUploadStatus("paused");
       showToast.info("Tạm dừng", "Đã tạm dừng upload");
-      
+
       // Dispatch to Redux
       dispatch(pauseUploadAction(uploadId));
     }
@@ -361,7 +382,7 @@ export function TusUploadComponent({
       uploadRef.current.start();
       setUploadStatus("uploading");
       showToast.info("Tiếp tục", "Đang tiếp tục upload...");
-      
+
       // Dispatch to Redux
       dispatch(resumeUploadAction(uploadId));
     }
@@ -413,7 +434,8 @@ export function TusUploadComponent({
             type="button"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            className="mt-2">
+            className="mt-2"
+          >
             Chọn file video
           </Button>
         </div>
@@ -438,7 +460,8 @@ export function TusUploadComponent({
                 variant="ghost"
                 size="sm"
                 onClick={resetUpload}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              >
                 <X className="h-4 w-4" />
               </Button>
             )}
@@ -478,17 +501,17 @@ export function TusUploadComponent({
           {/* Control buttons */}
           <div className="flex gap-2">
             {uploadStatus === "idle" && (
-              <Button 
-                type="button" 
-                onClick={startUpload} 
+              <Button
+                type="button"
+                onClick={startUpload}
                 className="flex-1"
                 disabled={
-                  !file || 
-                  !episodeMetadata.movieId || 
-                  episodeMetadata.movieId.trim() === '' ||
-                  !episodeMetadata.title || 
-                  episodeMetadata.title.trim() === '' ||
-                  !episodeMetadata.episodeNumber || 
+                  !file ||
+                  !episodeMetadata.movieId ||
+                  episodeMetadata.movieId.trim() === "" ||
+                  !episodeMetadata.title ||
+                  episodeMetadata.title.trim() === "" ||
+                  !episodeMetadata.episodeNumber ||
                   episodeMetadata.episodeNumber < 1
                 }
               >
@@ -503,14 +526,16 @@ export function TusUploadComponent({
                   type="button"
                   variant="outline"
                   onClick={pauseUpload}
-                  className="flex-1">
+                  className="flex-1"
+                >
                   <Pause className="h-4 w-4 mr-2" />
                   Tạm dừng
                 </Button>
                 <Button
                   type="button"
                   variant="destructive"
-                  onClick={cancelUpload}>
+                  onClick={cancelUpload}
+                >
                   <X className="h-4 w-4 mr-2" />
                   Hủy
                 </Button>
@@ -526,7 +551,8 @@ export function TusUploadComponent({
                 <Button
                   type="button"
                   variant="destructive"
-                  onClick={cancelUpload}>
+                  onClick={cancelUpload}
+                >
                   <X className="h-4 w-4 mr-2" />
                   Hủy
                 </Button>
@@ -549,7 +575,8 @@ export function TusUploadComponent({
                 type="button"
                 variant="outline"
                 onClick={resetUpload}
-                className="flex-1">
+                className="flex-1"
+              >
                 Upload file khác
               </Button>
             )}

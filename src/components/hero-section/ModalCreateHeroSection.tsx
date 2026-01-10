@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { showToast } from "@/lib/toast";
 import { useHeroSectionStore } from "@/store/slices/heroSectionSlice";
 import { ModalSelectMovies } from "./ModalSelectMovies";
@@ -17,7 +16,7 @@ export function ModalCreateHeroSection({
   onComplete,
   existingHeroSections = [],
 }: ModalCreateHeroSectionProps) {
-  const { createHeroSection, isCreating, createError } = useHeroSectionStore();
+  const { createHeroSection, createError } = useHeroSectionStore();
 
   const handleConfirm = async (movieIds: string[]) => {
     if (movieIds.length === 0) {
@@ -59,7 +58,10 @@ export function ModalCreateHeroSection({
         onComplete();
         onClose();
       } else {
-        showToast.error("Lỗi", createError || "Không thể thêm phim vào hero section");
+        showToast.error(
+          "Lỗi",
+          createError || "Không thể thêm phim vào hero section"
+        );
       }
     } catch (error) {
       showToast.error("Lỗi", createError || "Có lỗi xảy ra khi thêm phim");
@@ -77,4 +79,3 @@ export function ModalCreateHeroSection({
     />
   );
 }
-

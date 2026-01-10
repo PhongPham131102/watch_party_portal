@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Loader2, Search, Plus, X } from "lucide-react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
+import { Loader2, Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,7 +33,9 @@ export function ModalSelectMovies({
   excludeMovieIds = [],
 }: ModalSelectMoviesProps) {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [selectedMovieIds, setSelectedMovieIds] = useState<Set<string>>(new Set());
+  const [selectedMovieIds, setSelectedMovieIds] = useState<Set<string>>(
+    new Set()
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 400);
   const [page, setPage] = useState(1);
@@ -169,7 +177,8 @@ export function ModalSelectMovies({
           <div
             ref={listRef}
             className="flex-1 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800"
-            onScroll={handleScroll}>
+            onScroll={handleScroll}
+          >
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400 mb-3" />
@@ -203,8 +212,9 @@ export function ModalSelectMovies({
                         isSelected
                           ? "bg-blue-50 dark:bg-blue-900/30 border-l-4 border-l-blue-600 dark:border-l-blue-400"
                           : "hover:bg-gray-50 dark:hover:bg-gray-700/50 border-l-4 border-l-transparent"
-                      }`}>
-                      <div className="flex-shrink-0">
+                      }`}
+                    >
+                      <div className="shrink-0">
                         <input
                           type="checkbox"
                           checked={isSelected}
@@ -217,11 +227,13 @@ export function ModalSelectMovies({
                         <img
                           src={movie.posterUrl}
                           alt={movie.title}
-                          className="w-14 h-20 object-cover rounded-lg flex-shrink-0 shadow-sm"
+                          className="w-14 h-20 object-cover rounded-lg shrink-0 shadow-sm"
                         />
                       ) : (
-                        <div className="w-14 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex-shrink-0 flex items-center justify-center shadow-sm">
-                          <span className="text-xs text-gray-400">No image</span>
+                        <div className="w-14 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg shrink-0 flex items-center justify-center shadow-sm">
+                          <span className="text-xs text-gray-400">
+                            No image
+                          </span>
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
@@ -289,7 +301,8 @@ export function ModalSelectMovies({
           <Button
             onClick={handleConfirm}
             disabled={selectedMovieIds.size === 0}
-            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <Plus className="h-4 w-4" />
             Thêm {selectedMovieIds.size > 0 && `${selectedMovieIds.size} `}phim
           </Button>
@@ -298,4 +311,3 @@ export function ModalSelectMovies({
     </Dialog>
   );
 }
-

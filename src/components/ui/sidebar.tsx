@@ -14,7 +14,6 @@ import {
   Film,
   UserCircle,
   Video,
-  MessageSquare,
   Shield,
   Tags,
   Layout,
@@ -167,7 +166,8 @@ export function Sidebar({
       className={cn(
         "relative flex h-full flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out",
         isCollapsed ? "w-16" : "w-64"
-      )}>
+      )}
+    >
       {/* Header */}
       <div className="flex h-16! items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center space-x-3 h-[60px]!">
@@ -185,7 +185,8 @@ export function Sidebar({
           variant="ghost"
           size="sm"
           onClick={onToggle}
-          className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           ) : (
@@ -214,7 +215,8 @@ export function Sidebar({
                     ? "bg-linear-to-r from-blue-600 to-blue-700 text-white shadow-lg"
                     : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white",
                   isCollapsed ? "justify-center px-0" : ""
-                )}>
+                )}
+              >
                 <Icon
                   className={cn(
                     "h-5 w-5 transition-transform duration-200",
@@ -266,7 +268,8 @@ export function Sidebar({
           className={cn(
             "w-full justify-start h-11 px-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200 cursor-pointer",
             isCollapsed ? "justify-center px-0" : ""
-          )}>
+          )}
+        >
           <LogOut
             className={cn(
               "h-5 w-5 transition-transform duration-200",

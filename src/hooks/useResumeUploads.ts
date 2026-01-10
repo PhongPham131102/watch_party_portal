@@ -6,7 +6,6 @@ import {
   errorUpload as errorUploadAction,
 } from "@/store/slices/uploadSlice";
 import * as tus from "tus-js-client";
-import { episodeService } from "@/services/episode.service";
 import { showToast } from "@/lib/toast";
 
 /**
@@ -49,9 +48,7 @@ export function useResumeUploads() {
  */
 export function useResumeUpload(uploadId: string) {
   const dispatch = useAppDispatch();
-  const upload = useAppSelector(
-    (state) => state.upload.uploads[uploadId]
-  );
+  const upload = useAppSelector((state) => state.upload.uploads[uploadId]);
 
   const resumeUpload = async (file: File) => {
     if (!upload || !upload.tusUploadUrl) {
@@ -72,7 +69,6 @@ export function useResumeUpload(uploadId: string) {
           Authorization: `Bearer ${accessToken}`,
         },
         onProgress: (bytesUploaded, bytesTotal) => {
-          const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
           let speed = "";
           let eta = "";
 
@@ -94,8 +90,11 @@ export function useResumeUpload(uploadId: string) {
             }
           }
 
-          // Dispatch progress update
-          // Note: This would need to be handled by a component that manages the upload
+          // Log progress for debugging
+          const percentage = Math.round((bytesUploaded / bytesTotal) * 100);
+          console.log(
+            `📤 Upload ${uploadId}: ${percentage}% | ${speed} | ETA: ${eta}`
+          );
         },
         onSuccess: () => {
           dispatch(resumeUploadAction(uploadId));
@@ -131,4 +130,3 @@ export function useResumeUpload(uploadId: string) {
     resumeUpload,
   };
 }
-
