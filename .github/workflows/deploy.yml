@@ -53,7 +53,7 @@ jobs:
             cd /home/watch_party_backend
             # Cập nhật file docker-compose và các cấu hình mới nhất từ backend repo
             git pull origin main
-            echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            printf "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose -f docker-compose.deploy.yml pull portal
             docker compose -f docker-compose.deploy.yml up -d --force-recreate portal
             docker image prune -f
