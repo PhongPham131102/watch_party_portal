@@ -18,6 +18,13 @@ export const API_ENDPOINTS = {
     ME: "/auth/me",
     LOGOUT: "/auth/logout",
   },
+  STATISTICS: {
+    OVERVIEW: "/statistics/overview",
+    REALTIME: "/statistics/realtime",
+    PROCESSING: "/statistics/processing",
+    TOP_CONTENT: "/statistics/top-content",
+    DASHBOARD: "/statistics/dashboard",
+  },
 } as const;
 
 export const APP_ROUTES = {

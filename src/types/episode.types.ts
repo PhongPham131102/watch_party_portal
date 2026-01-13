@@ -1,15 +1,16 @@
+/* eslint-disable no-unused-vars */
 export enum UploadVideoStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }
 
 export enum VideoProcessingStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }
 
 export interface VideoQuality {
@@ -26,26 +27,26 @@ export interface Episode {
   durationMinutes?: number;
   thumbnailUrl?: string;
   publishedAt?: string;
-  
+
   // Video URLs
   masterM3u8S3?: string;
   masterM3u8Minio?: string;
-  
+
   // Qualities
   qualitiesS3?: VideoQuality[];
   qualitiesMinio?: VideoQuality[];
-  
+
   // Upload status
   uploadStatusS3: UploadVideoStatus;
   uploadStatusMinio: UploadVideoStatus;
-  
+
   // Processing status (FFmpeg conversion)
   processingStatus: VideoProcessingStatus;
-  
+
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
-  
+
   // Relations
   movie?: {
     id: string;
@@ -85,8 +86,8 @@ export interface FetchEpisodesParams {
   processingStatus?: VideoProcessingStatus;
   episodeNumberFrom?: number;
   episodeNumberTo?: number;
-  sortBy?: 'episodeNumber' | 'title' | 'createdAt' | 'publishedAt';
-  sortOrder?: 'ASC' | 'DESC';
+  sortBy?: "episodeNumber" | "title" | "createdAt" | "publishedAt";
+  sortOrder?: "ASC" | "DESC";
 }
 
 // TUS Upload types
@@ -106,7 +107,6 @@ export interface UploadProgressData {
   bytesTotal: number;
   speed: string;
   estimatedTimeRemaining: string;
-  status: 'uploading' | 'completed' | 'failed';
+  status: "uploading" | "completed" | "failed";
   error?: string;
 }
-

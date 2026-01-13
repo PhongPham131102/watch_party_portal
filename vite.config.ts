@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
@@ -24,7 +25,9 @@ export default defineConfig({
     proxy: {
       // Proxy tất cả requests từ /api đến backend
       "/api": {
-        target: process.env.VITE_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8888",
+        target:
+          process.env.VITE_API_BASE_URL?.replace("/api/v1", "") ||
+          "http://localhost:8888",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path, // Giữ nguyên path /api/...
@@ -33,7 +36,9 @@ export default defineConfig({
       // Forward đến /api/v1/public (giả sử backend có prefix /api/v1)
       // Nếu backend không có prefix, xóa dòng rewrite để giữ nguyên path
       "/public": {
-        target: process.env.VITE_API_BASE_URL?.replace("/api/v1", "") || "http://localhost:8888",
+        target:
+          process.env.VITE_API_BASE_URL?.replace("/api/v1", "") ||
+          "http://localhost:8888",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => `/api/v1${path}`, // Thêm prefix /api/v1 vào /public
