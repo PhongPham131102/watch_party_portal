@@ -270,7 +270,7 @@ function Home() {
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 bg-slate-50/40 dark:bg-gray-950 min-h-screen">
       <PageHeader
         title="Bảng điều khiển vận hành"
-        description={`Lần cập nhật cuối: ${lastUpdatedLabel}`}
+        description={`Lần cập nhật cuối test cicd: ${lastUpdatedLabel}`}
         onRefresh={handleRefresh}
         isLoading={isRefreshing}
         actions={
@@ -289,11 +289,12 @@ function Home() {
 
       {/* KPI */}
 
-      {/* <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {overviewStats.map((stat) => (
           <Card
             key={stat.id}
-            className="border border-gray-200/80 dark:border-gray-800/80 bg-white dark:bg-gray-900">
+            className="border border-gray-200/80 dark:border-gray-800/80 bg-white dark:bg-gray-900"
+          >
             <CardHeader className="pb-4 flex flex-row items-center justify-between space-y-0">
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -314,7 +315,8 @@ function Home() {
               <div
                 className={`text-sm font-semibold ${
                   stat.trendPositive ? "text-green-600" : "text-rose-600"
-                }`}>
+                }`}
+              >
                 {stat.trend}
               </div>
             </CardContent>
@@ -357,7 +359,9 @@ function Home() {
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase">Peak viewers</p>
+                  <p className="text-xs text-gray-500 uppercase">
+                    Peak viewers
+                  </p>
                   <p className="text-lg font-semibold text-gray-900 dark:text-white">
                     {watchPartySummary.peakViewers.toLocaleString("vi-VN")}
                   </p>
@@ -399,8 +403,8 @@ function Home() {
               92% người xem đánh giá kết nối ổn định
             </div>
             <div className="flex items-center gap-2">
-              <Server className="h-4 w-4 text-blue-500" />
-              3 cụm máy đang hoạt động tối đa
+              <Server className="h-4 w-4 text-blue-500" />3 cụm máy đang hoạt
+              động tối đa
             </div>
           </CardFooter>
         </Card>
@@ -416,7 +420,8 @@ function Home() {
             {ingestionQueue.map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-gray-100 dark:border-gray-800 p-4 space-y-3">
+                className="rounded-xl border border-gray-100 dark:border-gray-800 p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between gap-2">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">
@@ -478,7 +483,8 @@ function Home() {
                     <td className="py-3">
                       <Badge
                         variant="outline"
-                        className={statusStyles[upload.status].className}>
+                        className={statusStyles[upload.status].className}
+                      >
                         {statusStyles[upload.status].label}
                       </Badge>
                     </td>
@@ -537,7 +543,8 @@ function Home() {
             {topMovies.map((movie, index) => (
               <div
                 key={movie.title}
-                className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-gray-800 p-4">
+                className="flex items-center justify-between rounded-xl border border-gray-100 dark:border-gray-800 p-4"
+              >
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center font-semibold text-blue-600">
                     #{index + 1}
@@ -560,7 +567,8 @@ function Home() {
                       movie.growth.includes("-")
                         ? "text-rose-500"
                         : "text-green-600"
-                    }`}>
+                    }`}
+                  >
                     {movie.growth}
                   </p>
                 </div>
@@ -580,7 +588,8 @@ function Home() {
             {pendingTasks.map((task) => (
               <div
                 key={task.label}
-                className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-4 space-y-2">
+                className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-4 space-y-2"
+              >
                 <p className="font-medium text-gray-900 dark:text-white">
                   {task.label}
                 </p>
@@ -597,7 +606,7 @@ function Home() {
             Bạn có thể chuyển thành ticket nếu cần theo dõi sát hơn.
           </CardFooter>
         </Card>
-      </div>    */}
+      </div>
     </div>
   );
 }
