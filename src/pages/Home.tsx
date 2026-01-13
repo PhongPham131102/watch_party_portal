@@ -288,7 +288,8 @@ function Home() {
       />
 
       {/* KPI */}
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+      {/* <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {overviewStats.map((stat) => (
           <Card
             key={stat.id}
@@ -596,7 +597,7 @@ function Home() {
             Bạn có thể chuyển thành ticket nếu cần theo dõi sát hơn.
           </CardFooter>
         </Card>
-      </div>
+      </div>    */}
     </div>
   );
 }
@@ -614,10 +615,7 @@ function Sparkline({ values }: { values: number[] }) {
 
   const points = values
     .map((value, index) => {
-      const x =
-        values.length === 1
-          ? 0
-          : (index / (values.length - 1)) * 100;
+      const x = values.length === 1 ? 0 : (index / (values.length - 1)) * 100;
       const y = 100 - ((value - min) / range) * 100;
       return `${x},${y}`;
     })
@@ -627,7 +625,8 @@ function Sparkline({ values }: { values: number[] }) {
     <svg
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
-      className="w-full h-24">
+      className="w-full h-24"
+    >
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.5" />
