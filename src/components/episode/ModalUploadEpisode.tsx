@@ -21,10 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TusUploadComponent } from "./TusUploadComponent";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-
-// Import movie list (you may need to fetch from API)
-import { useMovieStore } from "@/store/slices/movieSlice";
+import { MovieSelectForUpload } from "./MovieSelectForUpload";
 
 interface ModalUploadEpisodeProps {
   isOpen: boolean;
@@ -39,10 +36,10 @@ export default function ModalUploadEpisode({
   onComplete,
   preselectedMovieId,
 }: ModalUploadEpisodeProps) {
-  const { movies, loadMovies } = useMovieStore();
-
-  const form = useForm<Omit<UploadEpisodeFormValues, 'filename' | 'filetype'>>({
-    resolver: zodResolver(uploadEpisodeSchema.omit({ filename: true, filetype: true })),
+  const form = useForm<Omit<UploadEpisodeFormValues, "filename" | "filetype">>({
+    resolver: zodResolver(
+      uploadEpisodeSchema.omit({ filename: true, filetype: true })
+    ),
     defaultValues: {
       movieId: preselectedMovieId || "",
       episodeNumber: 1,
@@ -61,35 +58,25 @@ export default function ModalUploadEpisode({
         description: "",
         publishedAt: undefined,
       });
-      
-      // Load movies for dropdown
-      if (movies.length === 0) {
-        loadMovies({ page: 1, limit: 100, sortBy: 'title', sortOrder: 'ASC' });
-      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, preselectedMovieId]);
+  }, [isOpen, preselectedMovieId, form]);
 
   const handleUploadStart = (uploadId: string) => {
-    console.log('Upload started. Upload ID:', uploadId);
-    // Đóng modal ngay khi upload bắt đầu
-    // Progress sẽ được hiển thị ở UploadProgressList component
+    console.log("Upload started. Upload ID:", uploadId);
     onClose();
   };
 
   const handleUploadComplete = (_episodeId: string, uploadId: string) => {
-    console.log('Upload completed. Upload ID:', uploadId);
-    // Note: episodeId chưa có ngay (backend xử lý video ở background)
-    // User có thể refresh trang sau vài phút để xem episode mới
+    console.log("Upload completed. Upload ID:", uploadId);
     showToast.success(
-      "Upload hoàn tất", 
+      "Upload hoàn tất",
       "Video đang được xử lý. Vui lòng refresh trang sau ít phút để xem episode mới."
     );
     onComplete();
   };
 
   const handleUploadError = (error: string) => {
-    console.error('Upload error:', error);
+    console.error("Upload error:", error);
   };
 
   const handleCancel = () => {
@@ -97,7 +84,7 @@ export default function ModalUploadEpisode({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose} modal={false}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
@@ -116,20 +103,14 @@ export default function ModalUploadEpisode({
                   <FormLabel>
                     Phim <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn phim" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {movies.map((movie) => (
-                        <SelectItem key={movie.id} value={movie.id}>
-                          {movie.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <MovieSelectForUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Chọn phim"
+                      className="w-full"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -149,7 +130,9 @@ export default function ModalUploadEpisode({
                       type="number"
                       placeholder="Nhập số tập"
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value) || 1)
+                      }
                       min="1"
                     />
                   </FormControl>
@@ -200,10 +183,10 @@ export default function ModalUploadEpisode({
               <h3 className="text-sm font-medium mb-3">Upload video</h3>
               <TusUploadComponent
                 episodeMetadata={{
-                  movieId: form.watch('movieId') || '',
-                  episodeNumber: form.watch('episodeNumber') || 1,
-                  title: form.watch('title') || '',
-                  description: form.watch('description') || '',
+                  movieId: form.watch("movieId") || "",
+                  episodeNumber: form.watch("episodeNumber") || 1,
+                  title: form.watch("title") || "",
+                  description: form.watch("description") || "",
                 }}
                 onUploadStart={handleUploadStart}
                 onUploadComplete={handleUploadComplete}
@@ -217,4 +200,3 @@ export default function ModalUploadEpisode({
     </Dialog>
   );
 }
-
