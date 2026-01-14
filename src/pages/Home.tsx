@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Activity,
-  ArrowUpRight,
   BadgeCheck,
   CloudUpload,
   Cpu,
@@ -19,7 +18,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -553,81 +551,6 @@ function Home() {
                 </span>
               </div>
             </CardContent>
-          </Card>
-
-          {/* Top Content */}
-          <Card className="shadow-sm border-border/60 flex flex-col h-auto">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="h-5 w-5 text-amber-500" />
-                Top Nội Dung
-              </CardTitle>
-              <CardDescription>Phim được xem nhiều nhất</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="space-y-5">
-                {dashboard?.topContent.length === 0 && (
-                  <div className="text-center text-sm text-muted-foreground py-8">
-                    Chưa có dữ liệu thống kê
-                  </div>
-                )}
-                {dashboard?.topContent.map((movie, index) => (
-                  <div key={index} className="flex items-center gap-4 group">
-                    <div
-                      className={`
-                                flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-bold text-sm
-                                ${
-                                  index === 0
-                                    ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"
-                                    : index === 1
-                                      ? "bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-400"
-                                      : index === 2
-                                        ? "bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400"
-                                        : "bg-muted text-muted-foreground"
-                                }
-                            `}
-                    >
-                      #{movie.rank}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="truncate font-medium text-sm group-hover:text-primary transition-colors cursor-pointer"
-                        title={movie.title}
-                      >
-                        {movie.title}
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <div className="h-1.5 flex-1 rounded-full bg-secondary overflow-hidden">
-                          <div
-                            className="h-full bg-primary/60 rounded-full"
-                            style={{
-                              width: `${Math.min((movie.views / (dashboard?.topContent[0]?.views || 1)) * 100, 100)}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="block font-bold text-sm">
-                        {movie.views.toLocaleString()}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground uppercase">
-                        Views
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="pt-2">
-              <Button
-                variant="ghost"
-                className="w-full text-xs text-muted-foreground hover:text-foreground"
-                onClick={() => navigate(APP_ROUTES.MOVIES)}
-              >
-                Xem tất cả phim <ArrowUpRight className="ml-1 h-3 w-3" />
-              </Button>
-            </CardFooter>
           </Card>
         </div>
       </div>
